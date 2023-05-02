@@ -4,7 +4,6 @@ namespace Novius\LaravelNovaNews\Nova;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Heading;
@@ -84,11 +83,11 @@ class NewsPost extends Resource
         return [
             ID::make()->sortable(),
 
-            new Panel(trans('laravel-nova-news::crud-post.panel_utility'), $this->utilityFields()),
             new Panel(trans('laravel-nova-news::crud-post.panel_post_informations'), $this->mainFields()),
             new Panel(trans('laravel-nova-news::crud-post.panel_post_content'), $this->contentFields()),
             new Panel(trans('laravel-nova-news::crud-post.panel_seo_fields'), $this->seoFields()),
             new Panel(trans('laravel-nova-news::crud-post.panel_og_fields'), $this->ogFields()),
+            new Panel(trans('laravel-nova-news::crud-post.panel_utility'), $this->utilityFields()),
         ];
     }
 
@@ -123,9 +122,10 @@ class NewsPost extends Resource
                 ->displayUsingLabels()
                 ->hideFromIndex(),
 
-            BelongsTo::make(trans('laravel-nova-news::crud-post.category'), 'category', NewsCategory::class)
+            Tag::make(trans('laravel-nova-news::crud-post.categories'), 'categories', NewsCategory::class)
+                ->showCreateRelationButton()
+                ->preload()
                 ->nullable()
-                ->withoutTrashed()
                 ->hideFromIndex(),
 
             Tag::make(trans('laravel-nova-news::crud-post.tags'), 'tags', NewsTag::class)

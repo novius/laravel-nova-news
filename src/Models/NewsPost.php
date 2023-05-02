@@ -23,7 +23,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $featured_image
  * @property string $card_image
  * @property string $post_status
- * @property NewsCategory $category_id
+ * @property NewsCategory $categories
  * @property NewsTag $tags
  * @property int $status
  * @property Carbon $publication_date
@@ -157,9 +157,9 @@ class NewsPost extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(NewsCategory::class);
+        return $this->belongsToMany(NewsCategory::class, 'nova_news_post_category');
     }
 
     public function tags()

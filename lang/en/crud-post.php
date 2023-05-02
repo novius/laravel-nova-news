@@ -26,7 +26,7 @@ return [
     'slug' => 'Slug',
     'language' => 'Language',
     'status' => 'Status',
-    'category' => 'Category',
+    'categories' => 'Categories',
     'tags' => 'Tags',
     'publication_date' => 'Publication date',
     'publication_end_date' => 'Publication end date',

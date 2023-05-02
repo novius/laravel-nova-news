@@ -18,12 +18,21 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('nova_news_posts', function (Blueprint $table) {
-            $table->unsignedBigInteger('category_id')->nullable()->after('featured_image');
-            $table->foreign('category_id')
+        Schema::create('nova_news_post_category', function (Blueprint $table) {
+            $table->unsignedBigInteger('news_post_id');
+            $table->unsignedBigInteger('news_category_id');
+
+            $table->foreign('news_post_id')
+                ->references('id')
+                ->on('nova_news_posts')
+                ->cascadeOnDelete();
+
+            $table->foreign('news_category_id')
                 ->references('id')
                 ->on('nova_news_categories')
-                ->nullOnDelete();
+                ->cascadeOnDelete();
+
+            $table->primary(['news_post_id', 'news_category_id']);
         });
     }
 
@@ -32,11 +41,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('nova_news_posts', function (Blueprint $table) {
-            $table->dropForeign(['category_id']);
-            $table->dropColumn('category_id');
-        });
-
+        Schema::dropIfExists('nova_news_post_category');
         Schema::dropIfExists('nova_news_categories');
     }
 };

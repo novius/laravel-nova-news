@@ -43,6 +43,6 @@ class NewsCategory extends Model
 
     public function posts()
     {
-        return $this->hasMany(NewsPost::class);
+        return $this->belongsToMany(NewsPost::class, 'nova_news_post_category');
     }
 }
