@@ -5,7 +5,7 @@ namespace Novius\LaravelNovaNews;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Nova;
-use Novius\LaravelNovaNews\Nova\NewsPost;
+use Novius\LaravelNovaNews\Models\NewsPost;
 
 class LaravelNovaNewsServiceProvider extends ServiceProvider
 {
@@ -46,11 +46,11 @@ class LaravelNovaNewsServiceProvider extends ServiceProvider
 
         $this->publishes([__DIR__.'/../lang' => lang_path('vendor/laravel-nova-news')], 'lang');
 
-        Validator::extend('pageSlug', function ($attr, $value) {
+        Validator::extend('postSlug', function ($attr, $value) {
             return is_string($value) && preg_match('/^[a-zA-Z0-9-_]+$/', $value);
         });
 
-        Validator::extend('uniquePage', function ($attr, $value, $parameters) {
+        Validator::extend('uniquePost', function ($attr, $value, $parameters) {
             if (empty($parameters[0])) {
                 return false;
             }

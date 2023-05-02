@@ -105,8 +105,8 @@ class NewsPost extends Resource
 
             Slug::make(trans('laravel-nova-news::crud-post.slug'), 'slug')
                 ->from('title')
-                ->creationRules('required', 'string', 'max:191', 'pageSlug', 'uniquePage:{{resourceLocale}}')
-                ->updateRules('required', 'string', 'max:191', 'pageSlug', 'uniquePage:{{resourceLocale}},{{resourceId}}')
+                ->creationRules('required', 'string', 'max:191', 'postSlug', 'uniquePost:{{resourceLocale}}')
+                ->updateRules('required', 'string', 'max:191', 'postSlug', 'uniquePost:{{resourceLocale}},{{resourceId}}')
                 ->hideFromIndex(),
 
             // @TODO: Add a ContextField to choose the locale
@@ -130,7 +130,7 @@ class NewsPost extends Resource
                 ->withoutTrashed()
                 ->hideFromIndex(),
 
-            BelongsToMany::make(trans('laravel-nova-news::crud-post.tags'), 'tags', Newstag::class)
+            BelongsToMany::make(trans('laravel-nova-news::crud-post.tags'), 'tags', NewsTag::class)
                 ->hideFromIndex(),
 
             DateTime::make(trans('laravel-nova-news::crud-post.publication_date'), 'publication_date')
