@@ -24,12 +24,12 @@ return new class extends Migration
             $table->foreign('news_post_id')
                 ->references('id')
                 ->on('nova_news_posts')
-                ->onDelete('cascade');
+                ->cascadeOnDelete();
 
             $table->foreign('news_tag_id')
                 ->references('id')
                 ->on('nova_news_tags')
-                ->onDelete('cascade');
+                ->cascadeOnDelete();
 
             $table->primary(['news_post_id', 'news_tag_id']);
         });

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreign('category_id')
                 ->references('id')
                 ->on('nova_news_categories')
-                ->onDelete('cascade');
+                ->nullOnDelete();
         });
     }
 
