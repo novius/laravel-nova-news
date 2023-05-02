@@ -40,8 +40,6 @@ class NewsPost extends Resource
      */
     public static $title = 'title';
 
-    public static $priority = 1;
-
     /**
      * The columns that should be searched.
      *

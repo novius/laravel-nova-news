@@ -10,7 +10,7 @@ class NovaNewsHelpers
     /**
      * Get all posts.
      */
-    public static function getPosts(bool $onlyPublished = true): \Illuminate\Database\Eloquent\Collection
+    public static function getPosts(bool $onlyPublished = true): \Illuminate\Support\Collection
     {
         if ($onlyPublished) {
             return NovaNews::getPostModel()::published()->get();
@@ -22,7 +22,7 @@ class NovaNewsHelpers
     /**
      * Get all tags names for a given post.
      */
-    public static function getPostTagsNames(NewsPost $post): \Illuminate\Database\Eloquent\Collection
+    public static function getPostTagsNames(NewsPost $post): \Illuminate\Support\Collection
     {
         return collect($post->tags->pluck('name'));
     }

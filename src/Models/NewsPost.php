@@ -24,6 +24,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $card_image
  * @property string $post_status
  * @property NewsCategory $category_id
+ * @property NewsTag $tags
  * @property int $status
  * @property Carbon $publication_date
  * @property Carbon $end_publication_date
