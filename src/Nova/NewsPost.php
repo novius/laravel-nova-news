@@ -5,7 +5,6 @@ namespace Novius\LaravelNovaNews\Nova;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Heading;
@@ -13,6 +12,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
+use Laravel\Nova\Fields\Tag;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -128,7 +128,10 @@ class NewsPost extends Resource
                 ->withoutTrashed()
                 ->hideFromIndex(),
 
-            BelongsToMany::make(trans('laravel-nova-news::crud-post.tags'), 'tags', NewsTag::class)
+            Tag::make(trans('laravel-nova-news::crud-post.tags'), 'tags', NewsTag::class)
+                ->showCreateRelationButton()
+                ->preload()
+                ->nullable()
                 ->hideFromIndex(),
 
             DateTime::make(trans('laravel-nova-news::crud-post.publication_date'), 'publication_date')
