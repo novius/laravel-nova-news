@@ -19,14 +19,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Login to Laravel Nova
+      run: composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_LICENSE_KEY}
+      env:
+        NOVA_PASSWORD: ${{ secrets.NOVA_USERNAME }}
+        NOVA_USERNAME: ${{ secrets.NOVA_LICENSE_KEY }}
+
     - name: Cache composer dependencies
       uses: actions/cache@v3
       with:
         path: vendor
         key: composer-${{ hashFiles('composer.lock') }}
-
-    - name: Authorize Laravel Nova
-      run: composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_LICENSE_KEY}
 
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
