@@ -1,5 +1,10 @@
+<div align="center">
+
 # Laravel Nova News
 
+[![Novius CI](https://github.com/novius/laravel-nova-news/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/novius/laravel-nova-news/actions/workflows/main.yml)
+
+</div>
 
 ## Introduction 
 
