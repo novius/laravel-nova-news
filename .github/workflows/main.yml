@@ -1,0 +1,38 @@
+name: Novius CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint-php:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.2'
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Login to Laravel Nova
+      run: composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_LICENSE_KEY}
+      env:
+        NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+        NOVA_LICENSE_KEY: ${{ secrets.NOVA_LICENSE_KEY }}
+
+    - name: Cache composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: composer-${{ hashFiles('composer.lock') }}
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Lint PHP code via Laravel Pint
+      run: composer run-script lint
