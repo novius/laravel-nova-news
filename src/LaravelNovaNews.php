@@ -32,6 +32,7 @@ class LaravelNovaNews extends Tool
             MenuItem::make($categoryResource::label(), '/resources/'.$categoryResource::uriKey()),
             MenuItem::make($tagResource::label(), '/resources/'.$tagResource::uriKey()),
         ])
+            ->collapsable()
             ->icon('newspaper');
     }
 }

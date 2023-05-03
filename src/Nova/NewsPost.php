@@ -93,12 +93,11 @@ class NewsPost extends Resource
 
     protected function mainFields(): array
     {
-        $locales = config('laravel-nova-news.locales', []);
-
         return [
             Text::make(trans('laravel-nova-news::crud-post.title'), 'title')
                 ->sortable()
-                ->rules('required', 'string', 'max:255'),
+                ->rules('required', 'string', 'max:255')
+                ->hideFromIndex(),
 
             Slug::make(trans('laravel-nova-news::crud-post.slug'), 'slug')
                 ->from('title')
@@ -106,9 +105,8 @@ class NewsPost extends Resource
                 ->updateRules('required', 'string', 'max:191', 'postSlug', 'uniquePost:{{resourceLocale}},{{resourceId}}')
                 ->hideFromIndex(),
 
-            // @TODO: Add a ContextField to choose the locale
             Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
-                ->options($locales)
+                ->options($this->getLocales())
                 ->displayUsingLabels()
                 ->rules('required', 'string', 'max:255')
                 ->hideFromIndex(),
@@ -187,15 +185,22 @@ class NewsPost extends Resource
         ];
     }
 
+    /**
+     * These fields are used to customize the Resource listing.
+     * They're only displayed on the index view.
+     */
     protected function utilityFields(): array
     {
         return [
+            Text::make(trans('laravel-nova-news::crud-post.title'), 'title', function () {
+                return '<span class="whitespace-nowrap" title="'.$this->resource->title.'">'.Str::limit($this->resource->title, 25).'</span>';
+            })
+                ->sortable()
+                ->asHtml()
+                ->onlyOnIndex(),
+
             Text::make(trans('laravel-nova-news::crud-post.preview_link'), function () {
                 $previewUrl = $this->resource->previewUrl();
-
-                if (empty($previewUrl)) {
-                    return Str::limit($this->resource->title, 25);
-                }
 
                 return sprintf(
                     '<a class="link-default inline-flex items-center justify-start" href="%s" target="_blank">%s <svg class="inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg></a>',
@@ -208,11 +213,11 @@ class NewsPost extends Resource
 
             Boolean::make(trans('laravel-nova-news::crud-post.published'), function () {
                 return $this->resource->isPublished();
-            })->exceptOnForms(),
+            })->onlyOnIndex(),
 
             Boolean::make(trans('laravel-nova-news::crud-post.featured'), function () {
                 return $this->resource->isFeatured();
-            })->exceptOnForms(),
+            })->onlyOnIndex(),
 
             // Display Post status field on index
             Select::make(trans('laravel-nova-news::crud-post.status'), 'post_status')
@@ -222,9 +227,13 @@ class NewsPost extends Resource
                 ])
                 ->default(NewsPostModel::STATUS_DRAFT)
                 ->displayUsingLabels()
+                ->sortable()
                 ->onlyOnIndex(),
 
-            DateTime::make(trans('laravel-nova-news::crud-post.publication_date'), 'publication_date')
+            Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
+                ->options($this->getLocales())
+                ->displayUsingLabels()
+                ->sortable()
                 ->onlyOnIndex(),
         ];
     }
@@ -261,6 +270,11 @@ class NewsPost extends Resource
                 ->nullable()
                 ->hideFromIndex(),
         ];
+    }
+
+    protected function getLocales(): array
+    {
+        return config('laravel-nova-news.locales', []);
     }
 
     /**
