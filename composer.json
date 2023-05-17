@@ -45,7 +45,7 @@
         }
     },
     "scripts": {
-        "fmt": [
+        "cs-fix": [
             "./vendor/bin/pint -v"
         ],
         "lint": [
