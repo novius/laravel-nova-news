@@ -2,7 +2,6 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Spatie\Sluggable\HasSlug;
@@ -13,12 +12,11 @@ use Spatie\Sluggable\SlugOptions;
  *
  * @property string $name
  * @property string $slug
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class NewsCategory extends Model
 {
-    use HasFactory;
     use HasSlug;
 
     protected $table = 'nova_news_categories';
@@ -26,11 +24,6 @@ class NewsCategory extends Model
     protected $fillable = [
         'name',
         'slug',
-    ];
-
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     public function getSlugOptions(): SlugOptions
@@ -43,6 +36,6 @@ class NewsCategory extends Model
 
     public function posts()
     {
-        return $this->belongsToMany(NewsPost::class, 'nova_news_post_category');
+        return $this->belongsToMany(config('laravel-nova-news.post_model'), 'nova_news_post_category', 'news_category_id', 'news_post_id');
     }
 }

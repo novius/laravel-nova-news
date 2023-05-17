@@ -2,10 +2,8 @@
 
 namespace Novius\LaravelNovaNews\Nova;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -20,11 +18,14 @@ use Laravel\Nova\Resource;
 use Novius\LaravelNovaNews\Models\NewsPost as NewsPostModel;
 use Novius\LaravelNovaNews\Nova\Actions\DraftPosts;
 use Novius\LaravelNovaNews\Nova\Actions\PublishPosts;
-use Novius\LaravelNovaNews\Nova\Filters\PostPublished;
+use Novius\LaravelNovaPublishable\Nova\Filters\PublicationStatus;
+use Novius\LaravelNovaPublishable\Nova\Traits\Publishable;
 use Waynestate\Nova\CKEditor4Field\CKEditor;
 
 class NewsPost extends Resource
 {
+    use Publishable;
+
     /**
      * The model the resource corresponds to.
      *
@@ -75,6 +76,46 @@ class NewsPost extends Resource
         return trans('laravel-nova-news::crud-post.resource_label_singular');
     }
 
+    protected function fieldsForIndex(): array
+    {
+        return [
+            Text::make(trans('laravel-nova-news::crud-post.title'), 'title', function () {
+                return '<span class="whitespace-nowrap" title="'.$this->resource->title.'">'.Str::limit($this->resource->title, 25).'</span>';
+            })
+                ->sortable()
+                ->asHtml(),
+
+            Text::make(trans('laravel-nova-news::crud-post.preview_link'), function () {
+                $previewUrl = $this->resource->previewUrl();
+
+                return sprintf(
+                    '<a class="link-default inline-flex items-center justify-start" href="%s" target="_blank">%s <svg class="inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg></a>',
+                    $previewUrl,
+                    trans('Open')
+                );
+            })
+                ->asHtml(),
+
+            Boolean::make(trans('laravel-nova-news::crud-post.published'), function () {
+                return $this->resource->isPublished();
+            }),
+
+            ...$this->publishableDisplayFields(),
+
+            Boolean::make(trans('laravel-nova-news::crud-post.featured'), function () {
+                return $this->resource->isFeatured();
+            }),
+
+            Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
+                ->options($this->getLocales())
+                ->displayUsingLabels()
+                ->sortable()
+                ->showOnIndex(function () {
+                    return count($this->getLocales()) > 1;
+                }),
+        ];
+    }
+
     /**
      * Get the fields displayed by the resource.
      */
@@ -87,7 +128,6 @@ class NewsPost extends Resource
             new Panel(trans('laravel-nova-news::crud-post.panel_post_content'), $this->contentFields()),
             new Panel(trans('laravel-nova-news::crud-post.panel_seo_fields'), $this->seoFields()),
             new Panel(trans('laravel-nova-news::crud-post.panel_og_fields'), $this->ogFields()),
-            new Panel(trans('laravel-nova-news::crud-post.panel_utility'), $this->utilityFields()),
         ];
     }
 
@@ -109,16 +149,17 @@ class NewsPost extends Resource
                 ->options($this->getLocales())
                 ->displayUsingLabels()
                 ->rules('required', 'string', 'max:255')
+                ->default(function () {
+                    $locales = $this->getLocales();
+                    if (count($locales) === 1) {
+                        return array_keys($locales)[0];
+                    }
+
+                    return null;
+                })
                 ->hideFromIndex(),
 
-            Select::make(trans('laravel-nova-news::crud-post.status'), 'post_status')
-                ->options([
-                    NewsPostModel::STATUS_DRAFT => 'Draft',
-                    NewsPostModel::STATUS_PUBLISHED => 'Published',
-                ])
-                ->default(NewsPostModel::STATUS_DRAFT)
-                ->displayUsingLabels()
-                ->hideFromIndex(),
+            ...$this->publishableFields(),
 
             Tag::make(trans('laravel-nova-news::crud-post.categories'), 'categories', NewsCategory::class)
                 ->showCreateRelationButton()
@@ -130,16 +171,6 @@ class NewsPost extends Resource
                 ->showCreateRelationButton()
                 ->preload()
                 ->nullable()
-                ->hideFromIndex(),
-
-            DateTime::make(trans('laravel-nova-news::crud-post.publication_date'), 'publication_date')
-                ->nullable()
-                ->rules('required', 'date')
-                ->hideFromIndex(),
-
-            DateTime::make(trans('laravel-nova-news::crud-post.publication_end_date'), 'end_publication_date')
-                ->nullable()
-                ->rules('nullable', 'after:publication_date')
                 ->hideFromIndex(),
         ];
     }
@@ -182,59 +213,6 @@ class NewsPost extends Resource
                 ->help(trans('laravel-nova-news::crud-post.card_image_help'))
                 ->nullable()
                 ->hideFromIndex(),
-        ];
-    }
-
-    /**
-     * These fields are used to customize the Resource listing.
-     * They're only displayed on the index view.
-     */
-    protected function utilityFields(): array
-    {
-        return [
-            Text::make(trans('laravel-nova-news::crud-post.title'), 'title', function () {
-                return '<span class="whitespace-nowrap" title="'.$this->resource->title.'">'.Str::limit($this->resource->title, 25).'</span>';
-            })
-                ->sortable()
-                ->asHtml()
-                ->onlyOnIndex(),
-
-            Text::make(trans('laravel-nova-news::crud-post.preview_link'), function () {
-                $previewUrl = $this->resource->previewUrl();
-
-                return sprintf(
-                    '<a class="link-default inline-flex items-center justify-start" href="%s" target="_blank">%s <svg class="inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg></a>',
-                    $previewUrl,
-                    trans('Open')
-                );
-            })
-                ->asHtml()
-                ->onlyOnIndex(),
-
-            Boolean::make(trans('laravel-nova-news::crud-post.published'), function () {
-                return $this->resource->isPublished();
-            })->onlyOnIndex(),
-
-            Boolean::make(trans('laravel-nova-news::crud-post.featured'), function () {
-                return $this->resource->isFeatured();
-            })->onlyOnIndex(),
-
-            // Display Post status field on index
-            Select::make(trans('laravel-nova-news::crud-post.status'), 'post_status')
-                ->options([
-                    NewsPostModel::STATUS_DRAFT => 'Draft',
-                    NewsPostModel::STATUS_PUBLISHED => 'Published',
-                ])
-                ->default(NewsPostModel::STATUS_DRAFT)
-                ->displayUsingLabels()
-                ->sortable()
-                ->onlyOnIndex(),
-
-            Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
-                ->options($this->getLocales())
-                ->displayUsingLabels()
-                ->sortable()
-                ->onlyOnIndex(),
         ];
     }
 
@@ -291,7 +269,7 @@ class NewsPost extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
-            new PostPublished(),
+            new PublicationStatus(),
         ];
     }
 

@@ -2,12 +2,11 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Novius\LaravelPublishable\Traits\Publishable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -25,9 +24,6 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $post_status
  * @property NewsCategory $categories
  * @property NewsTag $tags
- * @property int $status
- * @property Carbon $publication_date
- * @property Carbon $end_publication_date
  * @property string $preview_token
  * @property string $seo_title
  * @property string $seo_description
@@ -35,27 +31,22 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $og_description
  * @property string $og_image
  * @property array $extras
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property Carbon|null $published_first_at
+ * @property Carbon|null $published_at
+ * @property Carbon|null $expired_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class NewsPost extends Model
 {
-    use HasFactory;
     use HasSlug;
+    use Publishable;
 
     protected $table = 'nova_news_posts';
 
     protected $guarded = ['id'];
 
-    const STATUS_DRAFT = 'Draft';
-
-    const STATUS_PUBLISHED = 'Published';
-
     protected $casts = [
-        'publication_date' => 'datetime',
-        'end_publication_date' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
         'extras' => 'json',
     ];
 
@@ -77,39 +68,6 @@ class NewsPost extends Model
                 $post->locale = array_key_first($locales);
             }
         });
-    }
-
-    public function scopePublished(Builder $query): Builder
-    {
-        $now = now();
-
-        return $query->where('post_status', self::STATUS_PUBLISHED)
-            ->where('publication_date', '<=', $now)
-            ->where(function ($query) use ($now) {
-                $query->where('end_publication_date', '>=', $now)
-                    ->orWhereNull('end_publication_date');
-            });
-    }
-
-    public function scopeNotPublished(Builder $query): Builder
-    {
-        $now = now();
-
-        return $query->where('post_status', self::STATUS_DRAFT)
-            ->orWhere('publication_date', '>', $now)
-            ->orWhere(function ($query) use ($now) {
-                $query->where('end_publication_date', '<', $now)
-                    ->whereNotNull('end_publication_date');
-            });
-    }
-
-    public function isPublished(): bool
-    {
-        $now = now();
-
-        return $this->post_status === self::STATUS_PUBLISHED
-            && $this->publication_date <= $now
-            && ($this->end_publication_date === null || $this->end_publication_date >= $now);
     }
 
     public function isFeatured(): bool
@@ -159,11 +117,11 @@ class NewsPost extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(NewsCategory::class, 'nova_news_post_category');
+        return $this->belongsToMany(config('laravel-nova-news.category_model'), 'nova_news_post_category', 'news_post_id', 'news_category_id');
     }
 
     public function tags()
     {
-        return $this->belongsToMany(NewsTag::class, 'nova_news_post_tag');
+        return $this->belongsToMany(config('laravel-nova-news.tag_model'), 'nova_news_post_tag', 'news_post_id', 'news_tag_id');
     }
 }

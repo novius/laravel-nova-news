@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Novius\LaravelNovaNews\Models\NewsPost;
 
 return new class extends Migration
 {
@@ -24,9 +23,8 @@ return new class extends Migration
             $table->string('featured_image')->nullable();
             $table->string('card_image')->nullable();
 
-            $table->enum('post_status', [NewsPost::STATUS_DRAFT, NewsPost::STATUS_PUBLISHED])->default(NewsPost::STATUS_DRAFT);
-            $table->dateTime('publication_date');
-            $table->dateTime('end_publication_date')->nullable();
+            $table->publishable();
+
             $table->string('preview_token')->nullable();
 
             $table->string('seo_title')->nullable();

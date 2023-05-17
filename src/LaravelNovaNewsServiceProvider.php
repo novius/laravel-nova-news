@@ -33,7 +33,7 @@ class LaravelNovaNewsServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'laravel-nova-news');
 
         $this->publishes([
-            __DIR__.'/../lang' => lang_path('vendor/laravel-nova-page-manager'),
+            __DIR__.'/../lang' => lang_path('vendor/laravel-nova-news'),
         ], 'lang');
 
         $this->publishes([
@@ -43,8 +43,6 @@ class LaravelNovaNewsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/laravel-nova-news.php' => config_path('laravel-nova-news.php'),
         ], 'config');
-
-        $this->publishes([__DIR__.'/../lang' => lang_path('vendor/laravel-nova-news')], 'lang');
 
         Validator::extend('postSlug', function ($attr, $value) {
             return is_string($value) && preg_match('/^[a-zA-Z0-9-_]+$/', $value);
