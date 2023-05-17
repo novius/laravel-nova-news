@@ -46,6 +46,7 @@ class NewsPost extends Resource
      */
     public static $search = [
         'title',
+        'slug',
     ];
 
     /**

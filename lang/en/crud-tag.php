@@ -17,4 +17,5 @@ return [
     'resource_label_singular' => 'Tag',
 
     'name' => 'Name',
+    'slug' => 'Slug',
 ];

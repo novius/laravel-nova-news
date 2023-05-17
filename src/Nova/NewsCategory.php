@@ -32,6 +32,7 @@ class NewsCategory extends Resource
      */
     public static $search = [
         'name',
+        'slug',
     ];
 
     /**

@@ -4,6 +4,7 @@ namespace Novius\LaravelNovaNews\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
@@ -31,6 +32,7 @@ class NewsTag extends Resource
      */
     public static $search = [
         'name',
+        'slug',
     ];
 
     /**
@@ -65,6 +67,10 @@ class NewsTag extends Resource
             ID::make()->sortable(),
 
             Text::make(trans('laravel-nova-news::crud-tag.name'), 'name')
+                ->rules('required', 'max:255'),
+
+            Slug::make(trans('laravel-nova-news::crud-tag.slug'), 'slug')
+                ->from('name')
                 ->rules('required', 'max:255'),
         ];
     }
