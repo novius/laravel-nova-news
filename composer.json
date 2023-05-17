@@ -49,7 +49,7 @@
             "./vendor/bin/pint -v"
         ],
         "lint": [
-            "@composer fmt -- --test"
+            "@composer cs-fix -- --test"
         ]
     },
     "repositories": [
