@@ -120,13 +120,13 @@ class NewsPost extends Resource
                 ->displayUsingLabels()
                 ->hideFromIndex(),
 
-            Tag::make(trans('laravel-nova-news::crud-post.categories'), 'categories', NewsCategory::class)
+            Tag::make(trans('laravel-nova-news::crud-post.categories'), 'categories', config('laravel-nova-news.category_resource'))
                 ->showCreateRelationButton()
                 ->preload()
                 ->nullable()
                 ->hideFromIndex(),
 
-            Tag::make(trans('laravel-nova-news::crud-post.tags'), 'tags', NewsTag::class)
+            Tag::make(trans('laravel-nova-news::crud-post.tags'), 'tags', config('laravel-nova-news.tag_resource'))
                 ->showCreateRelationButton()
                 ->preload()
                 ->nullable()
