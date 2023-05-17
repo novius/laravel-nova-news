@@ -2,8 +2,8 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -18,8 +18,8 @@ use Spatie\Sluggable\SlugOptions;
  */
 class NewsCategory extends Model
 {
-    use HasFactory;
     use HasSlug;
+    use SoftDeletes;
 
     protected $table = 'nova_news_categories';
 

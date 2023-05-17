@@ -41,6 +41,7 @@ return new class extends Migration
             $table->unique(['slug', 'locale']);
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

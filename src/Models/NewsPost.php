@@ -3,8 +3,8 @@
 namespace Novius\LaravelNovaNews\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -40,8 +40,8 @@ use Spatie\Sluggable\SlugOptions;
  */
 class NewsPost extends Model
 {
-    use HasFactory;
     use HasSlug;
+    use SoftDeletes;
 
     protected $table = 'nova_news_posts';
 

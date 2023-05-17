@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('nova_news_post_tag', function (Blueprint $table) {
