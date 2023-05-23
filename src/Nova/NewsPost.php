@@ -96,10 +96,6 @@ class NewsPost extends Resource
             })
                 ->asHtml(),
 
-            Boolean::make(trans('laravel-nova-news::crud-post.published'), function () {
-                return $this->resource->isPublished();
-            }),
-
             ...$this->publishableDisplayFields(),
 
             Boolean::make(trans('laravel-nova-news::crud-post.featured'), function () {
