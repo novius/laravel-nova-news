@@ -2,18 +2,22 @@
 
 return [
     /*
-     * The resource used to manage your posts.
+     * Resources used to manage your posts.
      */
-    'post_resource' => \Novius\LaravelNovaNews\Nova\NewsPost::class,
-    'category_resource' => \Novius\LaravelNovaNews\Nova\NewsCategory::class,
-    'tag_resource' => \Novius\LaravelNovaNews\Nova\NewsTag::class,
+    'resources' => [
+        'post' => \Novius\LaravelNovaNews\Nova\NewsPost::class,
+        'category' => \Novius\LaravelNovaNews\Nova\NewsCategory::class,
+        'tag' => \Novius\LaravelNovaNews\Nova\NewsTag::class,
+    ],
 
     /*
-     * The model used to manage your posts.
+     * Models used to manage your posts.
      */
-    'post_model' => \Novius\LaravelNovaNews\Models\NewsPost::class,
-    'category_model' => \Novius\LaravelNovaNews\Models\NewsCategory::class,
-    'tag_model' => \Novius\LaravelNovaNews\Models\NewsTag::class,
+    'models' => [
+        'post' => \Novius\LaravelNovaNews\Models\NewsPost::class,
+        'category' => \Novius\LaravelNovaNews\Models\NewsCategory::class,
+        'tag' => \Novius\LaravelNovaNews\Models\NewsTag::class,
+    ],
 
     /*
      * The locales available for your posts.
@@ -26,5 +30,9 @@ return [
     /*
      * The route name used to display news posts and categories.
      */
-    'front_route_name' => 'nova-news.post',
+    'front_routes_name' => [
+        'post' => null,
+        'category' => null,
+        'tag' => null,
+    ],
 ];

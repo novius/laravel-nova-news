@@ -4,6 +4,7 @@ namespace Novius\LaravelNovaNews\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Novius\LaravelNovaNews\NovaNews;
 
 /**
  * Class Tag
@@ -22,6 +23,6 @@ class NewsTag extends Model
 
     public function posts()
     {
-        return $this->belongsToMany(config('laravel-nova-news.post_model'), 'nova_news_post_tag', 'news_tag_id', 'news_post_id');
+        return $this->belongsToMany(NovaNews::getPostModel(), 'nova_news_post_tag', 'news_tag_id', 'news_post_id');
     }
 }

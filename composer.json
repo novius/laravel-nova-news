@@ -18,6 +18,7 @@
         "php": "^8.1",
         "illuminate/support": "^8.83.4|^9.3.1|^10.0",
         "laravel/nova": "^4.0",
+        "novius/laravel-nova-field-preview": "dev-main",
         "novius/laravel-nova-publishable": "dev-main",
         "novius/laravel-publishable": "dev-main",
         "spatie/laravel-sluggable": "^3.4",
@@ -58,6 +59,10 @@
         {
             "type": "composer",
             "url": "https://nova.laravel.com"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:novius/laravel-nova-field-preview.git"
         },
         {
             "type": "vcs",

@@ -4,8 +4,8 @@ namespace Novius\LaravelNovaNews\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelPublishable\Traits\Publishable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -37,7 +37,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class NewsPost extends Model
+class NewsPost extends ModelWithUrl
 {
     use HasSlug;
     use Publishable;
@@ -75,36 +75,9 @@ class NewsPost extends Model
         return $this->featured;
     }
 
-    public function url(): ?string
+    public function getFrontRouteName(): ?string
     {
-        $routeName = config('laravel-nova-news.front_route_name');
-
-        if (empty($routeName) || ! Route::has($routeName) || ! $this->exists) {
-            return null;
-        }
-
-        return route($routeName, [
-            'slug' => $this->slug,
-        ]);
-    }
-
-    public function previewUrl(): ?string
-    {
-        $routeName = config('laravel-nova-news.front_route_name');
-
-        if (empty($routeName) || ! Route::has($routeName) || ! $this->exists) {
-            return null;
-        }
-
-        $params = [
-            'slug' => $this->slug,
-        ];
-
-        if (! $this->isPublished()) {
-            $params['previewToken'] = $this->preview_token;
-        }
-
-        return route($routeName, $params);
+        return config('laravel-nova-news.front_routes_name.post');
     }
 
     public function getSlugOptions(): SlugOptions
@@ -117,11 +90,11 @@ class NewsPost extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(config('laravel-nova-news.category_model'), 'nova_news_post_category', 'news_post_id', 'news_category_id');
+        return $this->belongsToMany(NovaNews::getCategoryModel(), 'nova_news_post_category', 'news_post_id', 'news_category_id');
     }
 
     public function tags()
     {
-        return $this->belongsToMany(config('laravel-nova-news.tag_model'), 'nova_news_post_tag', 'news_post_id', 'news_tag_id');
+        return $this->belongsToMany(NovaNews::getTagModel(), 'nova_news_post_tag', 'news_post_id', 'news_tag_id');
     }
 }

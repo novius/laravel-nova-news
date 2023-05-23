@@ -2,8 +2,8 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Novius\LaravelNovaNews\NovaNews;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -15,7 +15,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class NewsCategory extends Model
+class NewsCategory extends ModelWithUrl
 {
     use HasSlug;
 
@@ -34,8 +34,13 @@ class NewsCategory extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
+    public function getFrontRouteName(): ?string
+    {
+        return config('laravel-nova-news.front_routes_name.category');
+    }
+
     public function posts()
     {
-        return $this->belongsToMany(config('laravel-nova-news.post_model'), 'nova_news_post_category', 'news_category_id', 'news_post_id');
+        return $this->belongsToMany(NovaNews::getPostModel(), 'nova_news_post_category', 'news_category_id', 'news_post_id');
     }
 }
