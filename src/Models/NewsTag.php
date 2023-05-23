@@ -2,9 +2,9 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Novius\LaravelNovaNews\NovaNews;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -13,10 +13,10 @@ use Spatie\Sluggable\SlugOptions;
  *
  * @property string $name
  * @property string $slug
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
-class NewsTag extends Model
+class NewsTag extends ModelWithUrl
 {
     use HasSlug;
     use SoftDeletes;
@@ -32,6 +32,11 @@ class NewsTag extends Model
         'updated_at' => 'datetime',
     ];
 
+    public function getFrontRouteName(): ?string
+    {
+        return config('laravel-nova-news.front_routes_name.tag');
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -42,6 +47,6 @@ class NewsTag extends Model
 
     public function posts()
     {
-        return $this->belongsToMany(NewsPost::class, 'nova_news_post_tag');
+        return $this->belongsToMany(NovaNews::getPostModel(), 'nova_news_post_tag', 'news_tag_id', 'news_post_id');
     }
 }

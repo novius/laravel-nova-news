@@ -60,7 +60,9 @@ This will allow you to override the resource class for example.
 
 return [
     // ...
-    'post_resource' => \App\Nova\Post::class,
+    'resources' => [
+        'post' => \App\Nova\Post::class,
+    ],
 ];
 ```
 
@@ -95,16 +97,6 @@ php artisan vendor:publish --provider="Novius\LaravelNovaNews\LaravelNovaNewsSer
 ```bash
 php artisan vendor:publish --provider="Novius\LaravelNovaNews\LaravelNovaNewsServiceProvider" --tag="lang"
 ```
-
-## Helper functions
-
-Some helper functions are available to retrieve posts, categories and tags.  
-They're found in the `Novius\LaravelNovaNews\Helpers\NovaNewsHelpers` class.
-
-* **`NovaNewsHelpers::getPosts()`**  
-  Retrieve all posts. Use the `$onlyPublished` parameter to filter only published posts. Default is `true`.
-* **`NovaNewsHelpers::getPostTagsNames($post)`**  
-  Retrieve all tags names for a given post.
 
 ## Lint
 
