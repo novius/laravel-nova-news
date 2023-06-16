@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Novius\LaravelNovaNews\NovaNews;
+use Novius\LaravelPublishable\Enums\PublicationStatus;
 use Novius\LaravelPublishable\Traits\Publishable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -32,6 +33,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $og_description
  * @property string $og_image
  * @property array $extras
+ * @property PublicationStatus $publication_status
  * @property Carbon|null $published_first_at
  * @property Carbon|null $published_at
  * @property Carbon|null $expired_at
