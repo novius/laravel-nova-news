@@ -13,26 +13,28 @@ abstract class ModelWithUrl extends Model
     public function url(): ?string
     {
         $routeName = $this->getFrontRouteName();
+        $parameter = $this->getUrlParameter();
 
-        if ($routeName === null || ! $this->exists || ! Route::has($routeName)) {
+        if ($routeName === null || ! $this->exists || ! $parameter) {
             return null;
         }
 
         return route($routeName, [
-            'slug' => $this->slug,
+            $parameter => $this->slug,
         ]);
     }
 
     public function previewUrl(): ?string
     {
         $routeName = $this->getFrontRouteName();
+        $parameter = $this->getUrlParameter();
 
-        if (empty($routeName) || ! Route::has($routeName) || ! $this->exists) {
+        if (empty($routeName) || ! $parameter || ! $this->exists) {
             return null;
         }
 
         $params = [
-            'slug' => $this->slug,
+            $parameter => $this->slug,
         ];
 
         if (in_array(Publishable::class, class_uses($this), true) && ! $this->isPublished()) {
@@ -40,5 +42,24 @@ abstract class ModelWithUrl extends Model
         }
 
         return route($routeName, $params);
+    }
+
+    protected function getUrlParameter(): ?string
+    {
+        $routeName = $this->getFrontRouteName();
+        if (empty($routeName)) {
+            return null;
+        }
+
+        $route = Route::getRoutes()->getByName($routeName);
+        if (! $route) {
+            return null;
+        }
+
+        if (! preg_match('/({\w+})/', $route->uri(), $matches)) {
+            return null;
+        }
+
+        return substr($matches[0], 1, -1);
     }
 }
