@@ -93,6 +93,11 @@ class NewsPost extends ModelWithUrl
             ->doNotGenerateSlugsOnUpdate();
     }
 
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->resolveRouteBindingQuery(static::withNotPublished(), $value, $field)->first();
+    }
+
     public function categories()
     {
         return $this->belongsToMany(NovaNews::getCategoryModel(), 'nova_news_post_category', 'news_post_id', 'news_category_id');
