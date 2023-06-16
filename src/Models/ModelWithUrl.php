@@ -42,7 +42,7 @@ abstract class ModelWithUrl extends Model
             $parameter => $this->slug,
         ];
 
-        if (in_array(Publishable::class, class_uses($this), true) && ! $this->isPublished()) {
+        if (in_array(Publishable::class, class_uses_recursive($this), true) && ! $this->isPublished()) {
             $params['previewToken'] = $this->preview_token;
         }
 
