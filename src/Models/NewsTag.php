@@ -11,6 +11,7 @@ use Spatie\Sluggable\SlugOptions;
 /**
  * Class Tag
  *
+ * @property int $id
  * @property string $name
  * @property string $slug
  * @property Carbon|null $created_at

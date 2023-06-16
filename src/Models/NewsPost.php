@@ -13,6 +13,7 @@ use Spatie\Sluggable\SlugOptions;
 /**
  * Class Post
  *
+ * @property int $id
  * @property string $title
  * @property string $slug
  * @property string $locale
