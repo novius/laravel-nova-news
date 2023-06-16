@@ -38,11 +38,6 @@ class NewsCategory extends ModelWithUrl
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     public function getFrontRouteName(): ?string
     {
         return config('laravel-nova-news.front_routes_name.category');

@@ -10,6 +10,11 @@ abstract class ModelWithUrl extends Model
 {
     abstract public function getFrontRouteName(): ?string;
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function url(): ?string
     {
         $routeName = $this->getFrontRouteName();
