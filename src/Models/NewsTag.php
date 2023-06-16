@@ -15,6 +15,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $slug
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $delete_at
  */
 class NewsTag extends ModelWithUrl
 {
