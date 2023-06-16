@@ -39,7 +39,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property Carbon|null $expired_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property Carbon|null $delete_at
+ * @property Carbon|null $deleted_at
  */
 class NewsPost extends ModelWithUrl
 {
