@@ -2,7 +2,6 @@
 
 namespace Novius\LaravelNovaNews\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
