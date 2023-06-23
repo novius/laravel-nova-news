@@ -18,9 +18,9 @@
         "php": "^8.1",
         "illuminate/support": "^8.83.4|^9.3.1|^10.0",
         "laravel/nova": "^4.0",
-        "novius/laravel-nova-field-preview": "dev-main",
+        "novius/laravel-nova-field-preview": "^1.0.0",
         "novius/laravel-nova-publishable": "dev-main",
-        "novius/laravel-publishable": "dev-main",
+        "novius/laravel-publishable": "^1.0.0",
         "spatie/laravel-sluggable": "^3.4",
         "waynestate/nova-ckeditor4-field": "^1.1"
     },
@@ -62,15 +62,7 @@
         },
         {
             "type": "vcs",
-            "url": "git@github.com:novius/laravel-nova-field-preview.git"
-        },
-        {
-            "type": "vcs",
             "url": "git@github.com:novius/laravel-nova-publishable.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:novius/laravel-publishable.git"
         }
     ],
     "config": {
