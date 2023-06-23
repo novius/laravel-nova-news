@@ -52,7 +52,7 @@
             "./vendor/bin/pint -v"
         ],
         "lint": [
-            "@composer cs_fix -- --test"
+            "@composer cs-fix -- --test"
         ]
     },
     "repositories": [
