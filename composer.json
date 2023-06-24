@@ -1,7 +1,12 @@
 {
     "name": "novius/laravel-nova-news",
     "description": "A Laravel Nova package for news and blog posts management",
-    "keywords": ["laravel", "nova", "news", "articles"],
+    "keywords": [
+        "laravel",
+        "nova",
+        "news",
+        "articles"
+    ],
     "support": {
         "issues": "https://github.com/novius/laravel-nova-news/issues",
         "source": "https://github.com/novius/laravel-nova-news"
@@ -27,12 +32,13 @@
     "require-dev": {
         "laravel/pint": "^1.10",
         "orchestra/testbench": "^8.5",
-        "pestphp/pest": "^2.5",
-        "pestphp/pest-plugin-laravel": "^2.0"
+        "pestphp/pest": "^2.8"
     },
     "autoload": {
         "psr-4": {
-            "Novius\\LaravelNovaNews\\": "src/"
+            "Novius\\LaravelNovaNews\\": "src/",
+            "Novius\\LaravelNovaNews\\Database\\Factories\\": "database/factories",
+            "Novius\\LaravelNovaNews\\Database\\Seeders\\": "database/seeders"
         }
     },
     "autoload-dev": {
@@ -53,7 +59,8 @@
         ],
         "lint": [
             "@composer cs-fix -- --test"
-        ]
+        ],
+        "test": "vendor/bin/pest"
     },
     "repositories": [
         {
