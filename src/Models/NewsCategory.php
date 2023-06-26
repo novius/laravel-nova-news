@@ -2,8 +2,11 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Novius\LaravelNovaNews\Database\Factories\NewsCategoryFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -20,6 +23,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 class NewsCategory extends ModelWithUrl
 {
+    use HasFactory;
     use HasSlug;
     use SoftDeletes;
 
@@ -46,5 +50,13 @@ class NewsCategory extends ModelWithUrl
     public function posts()
     {
         return $this->belongsToMany(NovaNews::getPostModel(), 'nova_news_post_category', 'news_category_id', 'news_post_id');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected static function newFactory(): Factory
+    {
+        return NewsCategoryFactory::new();
     }
 }

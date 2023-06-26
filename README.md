@@ -98,12 +98,20 @@ php artisan vendor:publish --provider="Novius\LaravelNovaNews\LaravelNovaNewsSer
 php artisan vendor:publish --provider="Novius\LaravelNovaNews\LaravelNovaNewsServiceProvider" --tag="lang"
 ```
 
+## Testing
+
+Run the tests with:
+
+```bash
+composer test
+```
+
 ## Lint
 
 Lint your code with Laravel Pint using:
 
 ```bash
-composer run-script lint
+composer lint
 ```
 
 ## Licence

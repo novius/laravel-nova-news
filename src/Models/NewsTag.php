@@ -2,8 +2,11 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Novius\LaravelNovaNews\Database\Factories\NewsTagFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -20,6 +23,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 class NewsTag extends ModelWithUrl
 {
+    use HasFactory;
     use HasSlug;
     use SoftDeletes;
 
@@ -50,5 +54,13 @@ class NewsTag extends ModelWithUrl
     public function posts()
     {
         return $this->belongsToMany(NovaNews::getPostModel(), 'nova_news_post_tag', 'news_tag_id', 'news_post_id');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected static function newFactory(): Factory
+    {
+        return NewsTagFactory::new();
     }
 }
