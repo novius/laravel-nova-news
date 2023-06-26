@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Novius\LaravelNovaNews\Models\NewsPost;
+use Novius\LaravelPublishable\Enums\PublicationStatus;
 
 uses(RefreshDatabase::class);
 
@@ -22,12 +23,10 @@ it('has a featured', function () {
     expect(NewsPost::factory()->create()->featured)->toBeBool();
 });
 
-// @TODO: Fix this test
-// it('has a publication_status', function () {
-//     $post = NewsPost::factory()->create();
-
-//     assertThat(PublicationStatus.valueOf("draft"), is(notNullValue()));
-// });
+it('has a publication_status', function () {
+    $publicationStatuses = PublicationStatus::cases();
+    expect($publicationStatuses)->toContain(NewsPost::factory()->create()->publication_status);
+});
 
 it('has an intro', function () {
     expect(NewsPost::factory()->create()->intro)->toBeString();
