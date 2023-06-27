@@ -16,7 +16,6 @@ return [
     'resource_label' => 'Posts',
     'resource_label_singular' => 'Post',
 
-    'panel_utility' => 'Utility',
     'panel_post_informations' => 'Post informations',
     'panel_post_content' => 'Post content',
     'panel_seo_fields' => 'SEO Fields',
