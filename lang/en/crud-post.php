@@ -45,4 +45,6 @@ return [
     'og_title' => 'OG title',
     'og_description' => 'OG description',
     'og_image' => 'OG image',
+
+    'translate' => 'Translate',
 ];

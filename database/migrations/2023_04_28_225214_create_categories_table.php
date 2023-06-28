@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('locale', 20);
+            $table->unsignedBigInteger('locale_parent_id')->nullable();
 
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
@@ -31,6 +32,11 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('locale_parent_id')
+                ->references('id')
+                ->on('nova_news_categories')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
         });
 
         Schema::create('nova_news_post_category', function (Blueprint $table) {

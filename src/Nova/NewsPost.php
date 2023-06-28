@@ -16,6 +16,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaFieldPreview\Nova\Fields\OpenPreview;
+use Novius\LaravelNovaNews\Actions\TranslateModel;
 use Novius\LaravelNovaNews\Models\NewsPost as NewsPostModel;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelNovaPublishable\Nova\Filters\PublicationStatus;
@@ -98,6 +99,7 @@ class NewsPost extends Resource
                 ->options(NovaNews::getLocales())
                 ->displayUsingLabels()
                 ->sortable()
+                ->filterable()
                 ->showOnIndex(function () {
                     return count(NovaNews::getLocales()) > 1;
                 }),
@@ -136,6 +138,8 @@ class NewsPost extends Resource
             Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
                 ->options(NovaNews::getLocales())
                 ->displayUsingLabels()
+                ->sortable()
+                ->filterable()
                 ->rules('required', 'string', 'max:255')
                 ->default(function () {
                     $locales = NovaNews::getLocales();
@@ -269,7 +273,16 @@ class NewsPost extends Resource
      */
     public function actions(NovaRequest $request): array
     {
+        $locales = NovaNews::getLocales();
+        if (count($locales) <= 1) {
+            return [];
+        }
+
         return [
+            TranslateModel::make()
+                ->onModel(NewsPostModel::class)
+                ->onlyInline()
+                ->withName(trans('laravel-nova-news::crud-post.translate')),
         ];
     }
 

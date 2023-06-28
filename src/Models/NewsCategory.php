@@ -18,6 +18,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $name
  * @property string $slug
  * @property string $locale
+ * @property int locale_parent_id
  * @property string $seo_title
  * @property string $seo_description
  * @property string $og_title
@@ -67,6 +68,11 @@ class NewsCategory extends ModelWithUrl
     public function getFrontRouteName(): ?string
     {
         return config('laravel-nova-news.front_routes_name.category');
+    }
+
+    public function localParent()
+    {
+        return $this->hasOne(static::class, 'id', 'locale_parent_id');
     }
 
     public function posts()

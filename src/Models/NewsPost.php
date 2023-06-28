@@ -21,6 +21,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $title
  * @property string $slug
  * @property string $locale
+ * @property int locale_parent_id
  * @property bool $featured
  * @property string $intro
  * @property string $content
@@ -95,6 +96,11 @@ class NewsPost extends ModelWithUrl
     public function resolveRouteBinding($value, $field = null)
     {
         return $this->resolveRouteBindingQuery(static::withNotPublished(), $value, $field)->first();
+    }
+
+    public function localParent()
+    {
+        return $this->hasOne(static::class, 'id', 'locale_parent_id');
     }
 
     public function categories()

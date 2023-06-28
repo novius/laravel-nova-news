@@ -13,6 +13,8 @@ use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
+use Novius\LaravelNovaNews\Actions\TranslateModel;
+use Novius\LaravelNovaNews\Models\NewsCategory as NewsCategoryModel;
 use Novius\LaravelNovaNews\NovaNews;
 
 class NewsCategory extends Resource
@@ -20,9 +22,9 @@ class NewsCategory extends Resource
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\Novius\LaravelNovaNews\Models\NewsCategory>
+     * @var class-string<NewsCategoryModel>
      */
-    public static $model = \Novius\LaravelNovaNews\Models\NewsCategory::class;
+    public static $model = NewsCategoryModel::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -96,6 +98,7 @@ class NewsCategory extends Resource
                 ->displayUsingLabels()
                 ->rules('required', 'string', 'max:255')
                 ->sortable()
+                ->filterable()
                 ->showOnIndex(function () {
                     return count(NovaNews::getLocales()) > 1;
                 })
@@ -173,7 +176,18 @@ class NewsCategory extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        $locales = NovaNews::getLocales();
+        if (count($locales) <= 1) {
+            return [];
+        }
+
+        return [
+            TranslateModel::make()
+                ->onModel(NewsCategoryModel::class)
+                ->titleField('name')
+                ->onlyInline()
+                ->withName(trans('laravel-nova-news::crud-category.translate')),
+        ];
     }
 
     /**
