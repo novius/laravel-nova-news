@@ -2,11 +2,16 @@
 
 namespace Novius\LaravelNovaNews\Nova;
 
+use Illuminate\Support\Str;
+use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaNews\NovaNews;
 
@@ -67,6 +72,15 @@ class NewsCategory extends Resource
         return [
             ID::make()->sortable(),
 
+            new Panel(trans('laravel-nova-news::crud-category.panel_post_informations'), $this->mainFields()),
+            new Panel(trans('laravel-nova-news::crud-category.panel_seo_fields'), $this->seoFields()),
+            new Panel(trans('laravel-nova-news::crud-category.panel_og_fields'), $this->ogFields()),
+        ];
+    }
+
+    protected function mainFields(): array
+    {
+        return [
             Text::make(trans('laravel-nova-news::crud-category.name'), 'name')
                 ->sortable()
                 ->rules('required', 'max:255'),
@@ -93,6 +107,40 @@ class NewsCategory extends Resource
 
                     return null;
                 }),
+        ];
+    }
+
+    protected function seoFields(): array
+    {
+        return [
+            Heading::make(trans('laravel-nova-news::crud-category.seo_heading'))
+                ->asHtml(),
+
+            Text::make(trans('laravel-nova-news::crud-category.seo_title'), 'seo_title')
+                ->nullable()
+                ->hideFromIndex(),
+
+            Textarea::make(trans('laravel-nova-news::crud-category.seo_description'), 'seo_description'),
+        ];
+    }
+
+    protected function ogFields(): array
+    {
+        return [
+            Heading::make(trans('laravel-nova-news::crud-category.og_heading'))
+                ->asHtml(),
+
+            Text::make(trans('laravel-nova-news::crud-category.og_title'), 'og_title')
+                ->nullable()
+                ->hideFromIndex(),
+
+            Textarea::make(trans('laravel-nova-news::crud-category.og_description'), 'og_description')
+                ->nullable()
+                ->hideFromIndex(),
+
+            Image::make(trans('laravel-nova-news::crud-category.og_image'), 'og_image')
+                ->nullable()
+                ->hideFromIndex(),
         ];
     }
 
@@ -126,5 +174,22 @@ class NewsCategory extends Resource
     public function actions(NovaRequest $request): array
     {
         return [];
+    }
+
+    /**
+     * Return a replicated resource.
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function replicate()
+    {
+        return tap(parent::replicate(), function ($resource) {
+            $model = $resource->model();
+
+            $model->title = $model->title.' (copy)';
+            $model->slug = Str::slug($model->title);
+        });
     }
 }

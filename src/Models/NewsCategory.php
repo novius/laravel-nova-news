@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Novius\LaravelNovaNews\Database\Factories\NewsCategoryFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Spatie\Sluggable\HasSlug;
@@ -19,6 +18,12 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $name
  * @property string $slug
  * @property string $locale
+ * @property string $seo_title
+ * @property string $seo_description
+ * @property string $og_title
+ * @property string $og_description
+ * @property string $og_image
+ * @property array $extras
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -34,6 +39,10 @@ class NewsCategory extends ModelWithUrl
     protected $fillable = [
         'name',
         'slug',
+    ];
+
+    protected $casts = [
+        'extras' => 'json',
     ];
 
     protected static function booted()

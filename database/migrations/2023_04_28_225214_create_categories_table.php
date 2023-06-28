@@ -16,10 +16,21 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('locale', 20);
+
+            $table->string('seo_title')->nullable();
+            $table->string('seo_description')->nullable();
+
+            $table->string('og_title')->nullable();
+            $table->string('og_description')->nullable();
+            $table->string('og_image')->nullable();
+
+            $table->json('extras')->nullable();
+
+            $table->unique(['slug', 'locale']);
+
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['slug', 'locale']);
         });
 
         Schema::create('nova_news_post_category', function (Blueprint $table) {
