@@ -12,3 +12,7 @@ it('has a name', function () {
 it('has a slug', function () {
     expect(NewsCategory::factory()->create()->slug)->toBeString();
 });
+
+it('has a locale', function () {
+    expect(NewsCategory::factory()->create()->locale)->toBeString();
+});

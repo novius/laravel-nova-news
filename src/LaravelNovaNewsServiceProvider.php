@@ -5,6 +5,7 @@ namespace Novius\LaravelNovaNews;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Nova;
+use Novius\LaravelNovaNews\Models\NewsCategory;
 use Novius\LaravelNovaNews\Models\NewsPost;
 
 class LaravelNovaNewsServiceProvider extends ServiceProvider
@@ -44,7 +45,7 @@ class LaravelNovaNewsServiceProvider extends ServiceProvider
             __DIR__.'/../config/laravel-nova-news.php' => config_path('laravel-nova-news.php'),
         ], 'config');
 
-        Validator::extend('postSlug', function ($attr, $value) {
+        Validator::extend('newsSlug', function ($attr, $value) {
             return is_string($value) && preg_match('/^[a-zA-Z0-9-_]+$/', $value);
         });
 
@@ -55,6 +56,21 @@ class LaravelNovaNewsServiceProvider extends ServiceProvider
 
             $resourceId = $parameters[1] ?? null;
             $query = NewsPost::where('locale', $parameters[0])
+                ->where('slug', $value);
+            if ($resourceId) {
+                $query->where('id', '<>', $resourceId);
+            }
+
+            return empty($query->first());
+        });
+
+        Validator::extend('uniqueCategory', function ($attr, $value, $parameters) {
+            if (empty($parameters[0])) {
+                return false;
+            }
+
+            $resourceId = $parameters[1] ?? null;
+            $query = NewsCategory::where('locale', $parameters[0])
                 ->where('slug', $value);
             if ($resourceId) {
                 $query->where('id', '<>', $resourceId);

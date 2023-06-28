@@ -3,10 +3,12 @@
 namespace Novius\LaravelNovaNews\Nova;
 
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Novius\LaravelNovaNews\NovaNews;
 
 class NewsCategory extends Resource
 {
@@ -71,7 +73,26 @@ class NewsCategory extends Resource
 
             Slug::make(trans('laravel-nova-news::crud-category.slug'), 'slug')
                 ->from('name')
+                ->creationRules('required', 'string', 'max:191', 'newsSlug', 'uniqueCategory:{{resourceLocale}}')
+                ->updateRules('required', 'string', 'max:191', 'newsSlug', 'uniqueCategory:{{resourceLocale}},{{resourceId}}')
                 ->rules('required', 'max:255'),
+
+            Select::make(trans('laravel-nova-news::crud-category.language'), 'locale')
+                ->options(NovaNews::getLocales())
+                ->displayUsingLabels()
+                ->rules('required', 'string', 'max:255')
+                ->sortable()
+                ->showOnIndex(function () {
+                    return count(NovaNews::getLocales()) > 1;
+                })
+                ->default(function () {
+                    $locales = NovaNews::getLocales();
+                    if (count($locales) === 1) {
+                        return array_keys($locales)[0];
+                    }
+
+                    return null;
+                }),
         ];
     }
 

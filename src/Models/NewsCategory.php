@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Novius\LaravelNovaNews\Database\Factories\NewsCategoryFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Spatie\Sluggable\HasSlug;
@@ -17,6 +18,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property string $locale
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -33,6 +35,17 @@ class NewsCategory extends ModelWithUrl
         'name',
         'slug',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function ($category) {
+            $locales = config('laravel-nova-news.locales', []);
+
+            if (empty($category->locale) && count($locales) === 1) {
+                $category->locale = array_key_first($locales);
+            }
+        });
+    }
 
     public function getSlugOptions(): SlugOptions
     {

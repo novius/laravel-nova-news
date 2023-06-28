@@ -33,4 +33,9 @@ class NovaNews
     {
         return config('laravel-nova-news.resources.tag', \Novius\LaravelNovaNews\Nova\NewsTag::class);
     }
+
+    public static function getLocales(): array
+    {
+        return config('laravel-nova-news.locales', []);
+    }
 }

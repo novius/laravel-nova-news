@@ -59,11 +59,6 @@ class NewsPost extends ModelWithUrl
         'extras' => 'json',
     ];
 
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
     protected static function booted()
     {
         static::saving(function ($post) {

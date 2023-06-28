@@ -18,4 +18,5 @@ return [
 
     'name' => 'Name',
     'slug' => 'Slug',
+    'language' => 'Language',
 ];

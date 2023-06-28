@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->string('locale', 20);
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['slug', 'locale']);
         });
 
         Schema::create('nova_news_post_category', function (Blueprint $table) {

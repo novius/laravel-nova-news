@@ -24,6 +24,8 @@ class NewsCategoryFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
+            'slug' => $this->faker->slug(1),
+            'locale' => 'en',
         ];
     }
 }

@@ -17,6 +17,7 @@ use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaFieldPreview\Nova\Fields\OpenPreview;
 use Novius\LaravelNovaNews\Models\NewsPost as NewsPostModel;
+use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelNovaPublishable\Nova\Filters\PublicationStatus;
 use Novius\LaravelNovaPublishable\Nova\Traits\Publishable;
 use Waynestate\Nova\CKEditor4Field\CKEditor;
@@ -94,11 +95,11 @@ class NewsPost extends Resource
             }),
 
             Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
-                ->options($this->getLocales())
+                ->options(NovaNews::getLocales())
                 ->displayUsingLabels()
                 ->sortable()
                 ->showOnIndex(function () {
-                    return count($this->getLocales()) > 1;
+                    return count(NovaNews::getLocales()) > 1;
                 }),
         ];
     }
@@ -128,16 +129,16 @@ class NewsPost extends Resource
 
             Slug::make(trans('laravel-nova-news::crud-post.slug'), 'slug')
                 ->from('title')
-                ->creationRules('required', 'string', 'max:191', 'postSlug', 'uniquePost:{{resourceLocale}}')
-                ->updateRules('required', 'string', 'max:191', 'postSlug', 'uniquePost:{{resourceLocale}},{{resourceId}}')
+                ->creationRules('required', 'string', 'max:191', 'newsSlug', 'uniquePost:{{resourceLocale}}')
+                ->updateRules('required', 'string', 'max:191', 'newsSlug', 'uniquePost:{{resourceLocale}},{{resourceId}}')
                 ->hideFromIndex(),
 
             Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
-                ->options($this->getLocales())
+                ->options(NovaNews::getLocales())
                 ->displayUsingLabels()
                 ->rules('required', 'string', 'max:255')
                 ->default(function () {
-                    $locales = $this->getLocales();
+                    $locales = NovaNews::getLocales();
                     if (count($locales) === 1) {
                         return array_keys($locales)[0];
                     }
@@ -235,11 +236,6 @@ class NewsPost extends Resource
                 ->nullable()
                 ->hideFromIndex(),
         ];
-    }
-
-    protected function getLocales(): array
-    {
-        return config('laravel-nova-news.locales', []);
     }
 
     /**
