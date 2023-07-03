@@ -40,6 +40,17 @@ class NewsTag extends ModelWithUrl
         'updated_at' => 'datetime',
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($tag) {
+            $locales = config('laravel-nova-news.locales', []);
+
+            if (empty($tag->locale) && count($locales) === 1) {
+                $tag->locale = array_key_first($locales);
+            }
+        });
+    }
+
     public function getFrontRouteName(): ?string
     {
         return config('laravel-nova-news.front_routes_name.tag');
