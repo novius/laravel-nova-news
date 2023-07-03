@@ -85,17 +85,17 @@ class NewsPost extends ModelWithUrl
         return config('laravel-nova-news.front_routes_name.post');
     }
 
+    public function getFrontRouteParameter(): ?string
+    {
+        return config('laravel-nova-news.front_routes_parameters.post');
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug')
             ->doNotGenerateSlugsOnUpdate();
-    }
-
-    public function resolveRouteBinding($value, $field = null)
-    {
-        return $this->resolveRouteBindingQuery(static::withNotPublished(), $value, $field)->first();
     }
 
     public function localParent()

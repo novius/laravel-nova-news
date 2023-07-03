@@ -2,13 +2,17 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Novius\LaravelPublishable\Traits\Publishable;
 
 abstract class ModelWithUrl extends Model
 {
     abstract public function getFrontRouteName(): ?string;
+
+    abstract public function getFrontRouteParameter(): ?string;
 
     public function getRouteKeyName()
     {
@@ -42,7 +46,8 @@ abstract class ModelWithUrl extends Model
             $parameter => $this->slug,
         ];
 
-        if (in_array(Publishable::class, class_uses_recursive($this), true) && ! $this->isPublished()) {
+        $guard = config('laravel-nova-news.guard_preview');
+        if (empty($guard) && in_array(Publishable::class, class_uses_recursive($this), true) && ! $this->isPublished()) {
             $params['previewToken'] = $this->preview_token;
         }
 
@@ -51,6 +56,11 @@ abstract class ModelWithUrl extends Model
 
     protected function getUrlParameter(): ?string
     {
+        $parameter = $this->getFrontRouteParameter();
+        if (! empty($parameter)) {
+            return $parameter;
+        }
+
         $routeName = $this->getFrontRouteName();
         if (empty($routeName)) {
             return null;
@@ -66,5 +76,27 @@ abstract class ModelWithUrl extends Model
         }
 
         return substr($matches[0], 1, -1);
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if (in_array(Publishable::class, class_uses_recursive($this), true)) {
+            $guard = config('laravel-nova-news.guard_preview');
+            if (! empty($guard) && Auth::guard($guard)->check()) {
+                return $this->resolveRouteBindingQuery(static::withNotPublished(), $value, $field)->first();
+            }
+
+            if (request()->has('previewToken')) {
+                $query = static::withNotPublished()
+                    ->where(function (Builder $query) {
+                        $query->onlyPublished()
+                            ->orWhere('preview_token', request()->get('previewToken'));
+                    });
+
+                return $this->resolveRouteBindingQuery($query, $value, $field)->first();
+            }
+        }
+
+        return parent::resolveRouteBinding($value, $field);
     }
 }

@@ -43,6 +43,11 @@ class NewsTag extends ModelWithUrl
         return config('laravel-nova-news.front_routes_name.tag');
     }
 
+    public function getFrontRouteParameter(): ?string
+    {
+        return config('laravel-nova-news.front_routes_parameters.tag');
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

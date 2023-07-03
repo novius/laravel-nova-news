@@ -70,6 +70,11 @@ class NewsCategory extends ModelWithUrl
         return config('laravel-nova-news.front_routes_name.category');
     }
 
+    public function getFrontRouteParameter(): ?string
+    {
+        return config('laravel-nova-news.front_routes_parameters.category');
+    }
+
     public function localParent()
     {
         return $this->hasOne(static::class, 'id', 'locale_parent_id');

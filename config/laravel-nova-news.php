@@ -35,4 +35,15 @@ return [
         'category' => null,
         'tag' => null,
     ],
+
+    /*
+     * The route name used to display news posts and categories.
+     */
+    'front_routes_parameters' => [
+        'post' => null,
+        'category' => null,
+        'tag' => null,
+    ],
+
+    'guard_preview' => null,
 ];
