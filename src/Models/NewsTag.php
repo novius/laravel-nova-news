@@ -17,6 +17,8 @@ use Spatie\Sluggable\SlugOptions;
  * @property int $id
  * @property string $name
  * @property string $slug
+ * @property string $locale
+ * @property int locale_parent_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at

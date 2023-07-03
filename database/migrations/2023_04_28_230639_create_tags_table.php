@@ -14,9 +14,20 @@ return new class extends Migration
         Schema::create('nova_news_tags', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
+            $table->string('locale', 20);
+            $table->unsignedBigInteger('locale_parent_id')->nullable();
+
+            $table->unique(['slug', 'locale']);
+
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('locale_parent_id')
+                ->references('id')
+                ->on('nova_news_tags')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
         });
 
         Schema::create('nova_news_post_tag', function (Blueprint $table) {

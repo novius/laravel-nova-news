@@ -3,10 +3,14 @@
 namespace Novius\LaravelNovaNews\Nova;
 
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Novius\LaravelNovaNews\Actions\TranslateModel;
+use Novius\LaravelNovaNews\Models\NewsCategory as NewsCategoryModel;
+use Novius\LaravelNovaNews\NovaNews;
 
 class NewsTag extends Resource
 {
@@ -71,6 +75,24 @@ class NewsTag extends Resource
             Slug::make(trans('laravel-nova-news::crud-tag.slug'), 'slug')
                 ->from('name')
                 ->rules('required', 'max:255'),
+
+            Select::make(trans('laravel-nova-news::crud-tag.language'), 'locale')
+                ->options(NovaNews::getLocales())
+                ->displayUsingLabels()
+                ->rules('required', 'string', 'max:255')
+                ->sortable()
+                ->filterable()
+                ->showOnIndex(function () {
+                    return count(NovaNews::getLocales()) > 1;
+                })
+                ->default(function () {
+                    $locales = NovaNews::getLocales();
+                    if (count($locales) === 1) {
+                        return array_keys($locales)[0];
+                    }
+
+                    return null;
+                }),
         ];
     }
 
@@ -103,6 +125,17 @@ class NewsTag extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        $locales = NovaNews::getLocales();
+        if (count($locales) <= 1) {
+            return [];
+        }
+
+        return [
+            TranslateModel::make()
+                ->onModel(NewsCategoryModel::class)
+                ->titleField('name')
+                ->onlyInline()
+                ->withName(trans('laravel-nova-news::crud-tag.translate')),
+        ];
     }
 }
