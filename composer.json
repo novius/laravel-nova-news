@@ -24,8 +24,7 @@
         "illuminate/support": "^8.83.4|^9.3.1|^10.0",
         "laravel/nova": "^4.0",
         "novius/laravel-nova-field-preview": "^1.0.0",
-        "novius/laravel-nova-publishable": "^1.0.0",
-        "novius/laravel-publishable": "^1.0.0",
+        "novius/laravel-nova-publishable": "dev-main",
         "spatie/laravel-sluggable": "^3.4",
         "waynestate/nova-ckeditor4-field": "^1.1"
     },

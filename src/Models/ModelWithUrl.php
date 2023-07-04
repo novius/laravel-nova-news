@@ -83,20 +83,19 @@ abstract class ModelWithUrl extends Model
         if (in_array(Publishable::class, class_uses_recursive($this), true)) {
             $guard = config('laravel-nova-news.guard_preview');
             if (! empty($guard) && Auth::guard($guard)->check()) {
-                return $this->resolveRouteBindingQuery(static::withNotPublished(), $value, $field)->first();
+                return parent::resolveRouteBinding($value, $field);
             }
 
             if (request()->has('previewToken')) {
-                $query = static::withNotPublished()
-                    ->where(function (Builder $query) {
-                        $query->onlyPublished()
-                            ->orWhere('preview_token', request()->get('previewToken'));
-                    });
+                $query = static::where(function (Builder $query) {
+                    $query->published()
+                        ->orWhere('preview_token', request()->get('previewToken'));
+                });
 
                 return $this->resolveRouteBindingQuery($query, $value, $field)->first();
             }
         }
 
-        return parent::resolveRouteBinding($value, $field);
+        return $this->resolveRouteBindingQuery(static::published(), $value, $field)->first();
     }
 }
