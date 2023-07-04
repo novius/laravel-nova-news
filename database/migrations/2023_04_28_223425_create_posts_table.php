@@ -16,8 +16,7 @@ return new class extends Migration
 
             $table->string('title');
             $table->string('slug');
-            $table->string('locale', 20);
-            $table->unsignedBigInteger('locale_parent_id')->nullable();
+            $table->translatable();
             $table->boolean('featured')->default(false);
             $table->longText('intro')->nullable();
             $table->longText('content')->nullable();
@@ -41,12 +40,6 @@ return new class extends Migration
 
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('locale_parent_id')
-                ->references('id')
-                ->on('nova_news_posts')
-                ->onDelete('restrict')
-                ->onUpdate('restrict');
         });
     }
 

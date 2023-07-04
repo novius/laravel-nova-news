@@ -16,11 +16,11 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaFieldPreview\Nova\Fields\OpenPreview;
-use Novius\LaravelNovaNews\Actions\TranslateModel;
 use Novius\LaravelNovaNews\Models\NewsPost as NewsPostModel;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelNovaPublishable\Nova\Filters\PublicationStatus;
 use Novius\LaravelNovaPublishable\Nova\Traits\Publishable;
+use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
 use Waynestate\Nova\CKEditor4Field\CKEditor;
 
 class NewsPost extends Resource
@@ -279,10 +279,12 @@ class NewsPost extends Resource
         }
 
         return [
-            TranslateModel::make()
-                ->onModel(NewsPostModel::class)
-                ->onlyInline()
-                ->withName(trans('laravel-nova-news::crud-post.translate')),
+            Translate::make()
+                ->onModel($this->resource::class)
+                ->locales($locales)
+                ->titleField('title')
+                ->titleLabel(trans('laravel-nova-news::crud-post.title'))
+                ->onlyInline(),
         ];
     }
 

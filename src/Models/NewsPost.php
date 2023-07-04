@@ -11,6 +11,7 @@ use Novius\LaravelNovaNews\Database\Factories\NewsPostFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelPublishable\Enums\PublicationStatus;
 use Novius\LaravelPublishable\Traits\Publishable;
+use Novius\LaravelTranslatable\Traits\Translatable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -51,6 +52,7 @@ class NewsPost extends ModelWithUrl
     use HasSlug;
     use SoftDeletes;
     use Publishable;
+    use Translatable;
 
     protected $table = 'nova_news_posts';
 

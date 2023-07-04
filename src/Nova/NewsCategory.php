@@ -13,9 +13,9 @@ use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
-use Novius\LaravelNovaNews\Actions\TranslateModel;
 use Novius\LaravelNovaNews\Models\NewsCategory as NewsCategoryModel;
 use Novius\LaravelNovaNews\NovaNews;
+use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
 
 class NewsCategory extends Resource
 {
@@ -182,11 +182,12 @@ class NewsCategory extends Resource
         }
 
         return [
-            TranslateModel::make()
-                ->onModel(NewsCategoryModel::class)
+            Translate::make()
+                ->onModel($this->resource::class)
+                ->locales($locales)
                 ->titleField('name')
-                ->onlyInline()
-                ->withName(trans('laravel-nova-news::crud-category.translate')),
+                ->titleLabel(trans('laravel-nova-news::crud-category.name'))
+                ->onlyInline(),
         ];
     }
 

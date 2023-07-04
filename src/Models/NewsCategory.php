@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Novius\LaravelNovaNews\Database\Factories\NewsCategoryFactory;
 use Novius\LaravelNovaNews\NovaNews;
+use Novius\LaravelTranslatable\Traits\Translatable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -34,6 +35,7 @@ class NewsCategory extends ModelWithUrl
     use HasFactory;
     use HasSlug;
     use SoftDeletes;
+    use Translatable;
 
     protected $table = 'nova_news_categories';
 
