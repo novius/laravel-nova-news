@@ -131,7 +131,6 @@ class NewsTag extends Resource
 
         return [
             Translate::make()
-                ->onModel($this->resource::class)
                 ->locales($locales)
                 ->titleField('name')
                 ->titleLabel(trans('laravel-nova-news::crud-tag.name'))

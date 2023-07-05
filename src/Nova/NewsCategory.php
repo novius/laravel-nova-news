@@ -183,7 +183,6 @@ class NewsCategory extends Resource
 
         return [
             Translate::make()
-                ->onModel($this->resource::class)
                 ->locales($locales)
                 ->titleField('name')
                 ->titleLabel(trans('laravel-nova-news::crud-category.name'))

@@ -280,7 +280,6 @@ class NewsPost extends Resource
 
         return [
             Translate::make()
-                ->onModel($this->resource::class)
                 ->locales($locales)
                 ->titleField('title')
                 ->titleLabel(trans('laravel-nova-news::crud-post.title'))
