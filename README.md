@@ -86,6 +86,14 @@ class Post extends \Novius\LaravelNovaNews\Nova\NewsPost
 }
 ```
 
+## Assets
+
+Next we need to publish the Laravel Nova Translatable package's assets. We do this by running the following command:
+
+```sh
+php artisan vendor:publish --provider="Novius\LaravelNovaTranslatable\LaravelNovaTranslatableServiceProvider" --tag="public"
+```
+
 ## Migrations and lang files
 
 If you want to customize the migrations or lang files, you can publish them with:

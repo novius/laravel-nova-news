@@ -24,6 +24,7 @@ return [
     'title' => 'Title',
     'slug' => 'Slug',
     'language' => 'Language',
+    'translations' => 'Translations',
     'categories' => 'Categories',
     'tags' => 'Tags',
     'featured' => 'Featured ?',

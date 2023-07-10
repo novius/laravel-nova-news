@@ -7,7 +7,6 @@ use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Tag;
 use Laravel\Nova\Fields\Text;
@@ -21,6 +20,10 @@ use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelNovaPublishable\Nova\Filters\PublicationStatus;
 use Novius\LaravelNovaPublishable\Nova\Traits\Publishable;
 use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
+use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
+use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
+use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
+use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 use Waynestate\Nova\CKEditor4Field\CKEditor;
 
 class NewsPost extends Resource
@@ -58,6 +61,8 @@ class NewsPost extends Resource
      */
     public static $displayInNavigation = false;
 
+    public static $with = ['translations'];
+
     /**
      * Get the displayable label of the resource.
      *
@@ -78,6 +83,11 @@ class NewsPost extends Resource
         return trans('laravel-nova-news::crud-post.resource_label_singular');
     }
 
+    public function availableLocales(): array
+    {
+        return NovaNews::getLocales();
+    }
+
     protected function fieldsForIndex(): array
     {
         return [
@@ -95,14 +105,9 @@ class NewsPost extends Resource
                 return $this->resource->isFeatured();
             }),
 
-            Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
-                ->options(NovaNews::getLocales())
-                ->displayUsingLabels()
-                ->sortable()
-                ->filterable()
-                ->showOnIndex(function () {
-                    return count(NovaNews::getLocales()) > 1;
-                }),
+            Locale::make(trans('laravel-nova-news::crud-post.language'), 'locale'),
+
+            Translations::make(trans('laravel-nova-news::crud-post.translations')),
         ];
     }
 
@@ -135,21 +140,9 @@ class NewsPost extends Resource
                 ->updateRules('required', 'string', 'max:191', 'newsSlug', 'uniquePost:{{resourceLocale}},{{resourceId}}')
                 ->hideFromIndex(),
 
-            Select::make(trans('laravel-nova-news::crud-post.language'), 'locale')
-                ->options(NovaNews::getLocales())
-                ->displayUsingLabels()
-                ->sortable()
-                ->filterable()
-                ->rules('required', 'string', 'max:255')
-                ->default(function () {
-                    $locales = NovaNews::getLocales();
-                    if (count($locales) === 1) {
-                        return array_keys($locales)[0];
-                    }
+            Locale::make(trans('laravel-nova-news::crud-post.language'), 'locale'),
 
-                    return null;
-                })
-                ->hideFromIndex(),
+            Translations::make(trans('laravel-nova-news::crud-post.translations')),
 
             ...$this->publishableFields(),
 
@@ -247,7 +240,9 @@ class NewsPost extends Resource
      */
     public function cards(NovaRequest $request): array
     {
-        return [];
+        return [
+            new Locales(),
+        ];
     }
 
     /**
@@ -256,6 +251,7 @@ class NewsPost extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
+            new LocaleFilter(),
             new PublicationStatus(),
         ];
     }
@@ -273,14 +269,12 @@ class NewsPost extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        $locales = NovaNews::getLocales();
-        if (count($locales) <= 1) {
+        if (count($this->availableLocales()) <= 1) {
             return [];
         }
 
         return [
             Translate::make()
-                ->locales($locales)
                 ->titleField('title')
                 ->titleLabel(trans('laravel-nova-news::crud-post.title'))
                 ->onlyInline(),

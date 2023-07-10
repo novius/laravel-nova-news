@@ -19,6 +19,7 @@ return [
     'name' => 'Name',
     'slug' => 'Slug',
     'language' => 'Language',
+    'translations' => 'Translations',
 
     'translate' => 'Translate',
 ];

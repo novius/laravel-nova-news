@@ -3,13 +3,16 @@
 namespace Novius\LaravelNovaNews\Nova;
 
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
+use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
+use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
+use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
+use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 
 class NewsTag extends Resource
 {
@@ -44,6 +47,8 @@ class NewsTag extends Resource
      */
     public static $displayInNavigation = false;
 
+    public static $with = ['translations'];
+
     /**
      * Get the displayable label of the resource.
      */
@@ -58,6 +63,11 @@ class NewsTag extends Resource
     public static function singularLabel(): string
     {
         return trans('laravel-nova-news::crud-tag.resource_label_singular');
+    }
+
+    public function availableLocales(): array
+    {
+        return NovaNews::getLocales();
     }
 
     /**
@@ -75,23 +85,9 @@ class NewsTag extends Resource
                 ->from('name')
                 ->rules('required', 'max:255'),
 
-            Select::make(trans('laravel-nova-news::crud-tag.language'), 'locale')
-                ->options(NovaNews::getLocales())
-                ->displayUsingLabels()
-                ->rules('required', 'string', 'max:255')
-                ->sortable()
-                ->filterable()
-                ->showOnIndex(function () {
-                    return count(NovaNews::getLocales()) > 1;
-                })
-                ->default(function () {
-                    $locales = NovaNews::getLocales();
-                    if (count($locales) === 1) {
-                        return array_keys($locales)[0];
-                    }
+            Locale::make(trans('laravel-nova-news::crud-tag.language'), 'locale'),
 
-                    return null;
-                }),
+            Translations::make(trans('laravel-nova-news::crud-tag.translations')),
         ];
     }
 
@@ -100,7 +96,9 @@ class NewsTag extends Resource
      */
     public function cards(NovaRequest $request): array
     {
-        return [];
+        return [
+            new Locales(),
+        ];
     }
 
     /**
@@ -108,7 +106,9 @@ class NewsTag extends Resource
      */
     public function filters(NovaRequest $request): array
     {
-        return [];
+        return [
+            new LocaleFilter(),
+        ];
     }
 
     /**
@@ -124,14 +124,12 @@ class NewsTag extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        $locales = NovaNews::getLocales();
-        if (count($locales) <= 1) {
+        if (count($this->availableLocales()) <= 1) {
             return [];
         }
 
         return [
             Translate::make()
-                ->locales($locales)
                 ->titleField('name')
                 ->titleLabel(trans('laravel-nova-news::crud-tag.name'))
                 ->onlyInline(),

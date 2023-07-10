@@ -23,6 +23,7 @@ return [
     'name' => 'Name',
     'slug' => 'Slug',
     'language' => 'Language',
+    'translations' => 'Translations',
 
     'seo_heading' => '<p class="text-gray-400">These fields are used for SEO purposes. You can use them to customize how your post will be displayed on search engines.<br> They will be typically used on the <code>&lt;title&gt;</code> and <code>&lt;meta name="description"&gt;</code> meta tags of your post page.</p>',
     'seo_title' => 'SEO title',

@@ -23,6 +23,7 @@ return [
     'name' => 'Nom',
     'slug' => 'Slug',
     'language' => 'Langue',
+    'translations' => 'Traductions',
 
     'seo_heading' => '<p class="text-gray-400">Ces champs sont utilisés à des fins de référencement. Vous pouvez les utiliser pour personnaliser l\'affichage de votre article sur les moteurs de recherche.<br> Ils seront généralement utilisés sur les balises meta <code>&lt;title&gt;</code> et <code>&lt;meta name="description"&gt;</code> de votre page d\'article.</p>',
     'seo_title' => 'Titre SEO',
