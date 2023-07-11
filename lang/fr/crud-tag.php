@@ -18,8 +18,4 @@ return [
 
     'name' => 'Nom',
     'slug' => 'Slug',
-    'language' => 'Langue',
-    'translations' => 'Traductions',
-
-    'translate' => 'Traduire',
 ];

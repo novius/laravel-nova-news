@@ -23,8 +23,6 @@ return [
 
     'title' => 'Titre',
     'slug' => 'Slug',
-    'language' => 'Langue',
-    'translations' => 'Traductions',
     'categories' => 'Catégories',
     'tags' => 'Tags',
     'featured' => 'Mettre en avant ?',
@@ -46,6 +44,4 @@ return [
     'og_title' => 'Titre OG',
     'og_description' => 'Description OG',
     'og_image' => 'Image OG',
-
-    'translate' => 'Traduire',
 ];

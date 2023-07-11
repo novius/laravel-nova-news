@@ -7,7 +7,6 @@ use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
-use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
@@ -67,7 +66,7 @@ class NewsTag extends Resource
 
     public function availableLocales(): array
     {
-        return NovaNews::getLocales();
+        return config('laravel-nova-news.locales', []);
     }
 
     /**
@@ -85,9 +84,8 @@ class NewsTag extends Resource
                 ->from('name')
                 ->rules('required', 'max:255'),
 
-            Locale::make(trans('laravel-nova-news::crud-tag.language'), 'locale'),
-
-            Translations::make(trans('laravel-nova-news::crud-tag.translations')),
+            Locale::make(),
+            Translations::make(),
         ];
     }
 
@@ -124,15 +122,10 @@ class NewsTag extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        if (count($this->availableLocales()) <= 1) {
-            return [];
-        }
-
         return [
             Translate::make()
                 ->titleField('name')
-                ->titleLabel(trans('laravel-nova-news::crud-tag.name'))
-                ->onlyInline(),
+                ->titleLabel(trans('laravel-nova-news::crud-tag.name')),
         ];
     }
 }

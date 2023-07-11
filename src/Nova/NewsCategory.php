@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
@@ -14,9 +13,9 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaNews\Models\NewsCategory as NewsCategoryModel;
-use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
+use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
 use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 
@@ -73,7 +72,7 @@ class NewsCategory extends Resource
 
     public function availableLocales(): array
     {
-        return NovaNews::getLocales();
+        return config('laravel-nova-news.locales', []);
     }
 
     /**
@@ -103,24 +102,8 @@ class NewsCategory extends Resource
                 ->updateRules('required', 'string', 'max:191', 'newsSlug', 'uniqueCategory:{{resourceLocale}},{{resourceId}}')
                 ->rules('required', 'max:255'),
 
-            Select::make(trans('laravel-nova-news::crud-category.language'), 'locale')
-                ->displayUsingLabels()
-                ->rules('required', 'string', 'max:255')
-                ->sortable()
-                ->filterable()
-                ->showOnIndex(function () {
-                    return count(NovaNews::getLocales()) > 1;
-                })
-                ->default(function () {
-                    $locales = NovaNews::getLocales();
-                    if (count($locales) === 1) {
-                        return array_keys($locales)[0];
-                    }
-
-                    return null;
-                }),
-
-            Translations::make(trans('laravel-nova-news::crud-category.translations')),
+            Locale::make(),
+            Translations::make(),
         ];
     }
 
@@ -191,15 +174,10 @@ class NewsCategory extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        if (count($this->availableLocales()) <= 1) {
-            return [];
-        }
-
         return [
             Translate::make()
                 ->titleField('name')
-                ->titleLabel(trans('laravel-nova-news::crud-category.name'))
-                ->onlyInline(),
+                ->titleLabel(trans('laravel-nova-news::crud-category.name')),
         ];
     }
 

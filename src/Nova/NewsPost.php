@@ -16,9 +16,12 @@ use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaFieldPreview\Nova\Fields\OpenPreview;
 use Novius\LaravelNovaNews\Models\NewsPost as NewsPostModel;
-use Novius\LaravelNovaNews\NovaNews;
+use Novius\LaravelNovaPublishable\Nova\Fields\ExpiredAt;
+use Novius\LaravelNovaPublishable\Nova\Fields\PublicationBadge;
+use Novius\LaravelNovaPublishable\Nova\Fields\PublicationStatus as PublicationStatusField;
+use Novius\LaravelNovaPublishable\Nova\Fields\PublishedAt;
+use Novius\LaravelNovaPublishable\Nova\Fields\PublishedFirstAt;
 use Novius\LaravelNovaPublishable\Nova\Filters\PublicationStatus;
-use Novius\LaravelNovaPublishable\Nova\Traits\Publishable;
 use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
@@ -28,8 +31,6 @@ use Waynestate\Nova\CKEditor4Field\CKEditor;
 
 class NewsPost extends Resource
 {
-    use Publishable;
-
     /**
      * The model the resource corresponds to.
      *
@@ -85,7 +86,18 @@ class NewsPost extends Resource
 
     public function availableLocales(): array
     {
-        return NovaNews::getLocales();
+        return config('laravel-nova-news.locales', []);
+    }
+
+    protected function publicationFields(): array
+    {
+        return [
+            PublicationBadge::make(),
+            PublicationStatusField::make()->onlyOnForms(),
+            PublishedFirstAt::make()->onlyOnForms(),
+            PublishedAt::make()->onlyOnForms(),
+            ExpiredAt::make()->onlyOnForms(),
+        ];
     }
 
     protected function fieldsForIndex(): array
@@ -99,15 +111,14 @@ class NewsPost extends Resource
 
             OpenPreview::make(trans('laravel-nova-news::crud-post.preview_link')),
 
-            ...$this->publishableDisplayFields(),
+            ...$this->publicationFields(),
 
             Boolean::make(trans('laravel-nova-news::crud-post.featured'), function () {
                 return $this->resource->isFeatured();
             }),
 
-            Locale::make(trans('laravel-nova-news::crud-post.language'), 'locale'),
-
-            Translations::make(trans('laravel-nova-news::crud-post.translations')),
+            Locale::make(),
+            Translations::make(),
         ];
     }
 
@@ -140,11 +151,10 @@ class NewsPost extends Resource
                 ->updateRules('required', 'string', 'max:191', 'newsSlug', 'uniquePost:{{resourceLocale}},{{resourceId}}')
                 ->hideFromIndex(),
 
-            Locale::make(trans('laravel-nova-news::crud-post.language'), 'locale'),
+            Locale::make(),
+            Translations::make(),
 
-            Translations::make(trans('laravel-nova-news::crud-post.translations')),
-
-            ...$this->publishableFields(),
+            ...$this->publicationFields(),
 
             Tag::make(trans('laravel-nova-news::crud-post.categories'), 'categories', config('laravel-nova-news.resources.category'))
                 ->showCreateRelationButton()
@@ -269,15 +279,10 @@ class NewsPost extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        if (count($this->availableLocales()) <= 1) {
-            return [];
-        }
-
         return [
             Translate::make()
                 ->titleField('title')
-                ->titleLabel(trans('laravel-nova-news::crud-post.title'))
-                ->onlyInline(),
+                ->titleLabel(trans('laravel-nova-news::crud-post.title')),
         ];
     }
 
