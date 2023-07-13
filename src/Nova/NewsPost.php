@@ -22,7 +22,6 @@ use Novius\LaravelNovaPublishable\Nova\Fields\PublicationStatus as PublicationSt
 use Novius\LaravelNovaPublishable\Nova\Fields\PublishedAt;
 use Novius\LaravelNovaPublishable\Nova\Fields\PublishedFirstAt;
 use Novius\LaravelNovaPublishable\Nova\Filters\PublicationStatus;
-use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
@@ -94,7 +93,7 @@ class NewsPost extends Resource
         return [
             PublicationBadge::make(),
             PublicationStatusField::make()->onlyOnForms(),
-            PublishedFirstAt::make()->onlyOnForms(),
+            PublishedFirstAt::make()->hideFromIndex(),
             PublishedAt::make()->onlyOnForms(),
             ExpiredAt::make()->onlyOnForms(),
         ];
@@ -280,9 +279,6 @@ class NewsPost extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            Translate::make()
-                ->titleField('title')
-                ->titleLabel(trans('laravel-nova-news::crud-post.title')),
         ];
     }
 
