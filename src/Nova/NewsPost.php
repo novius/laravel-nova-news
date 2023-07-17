@@ -61,7 +61,7 @@ class NewsPost extends Resource
      */
     public static $displayInNavigation = false;
 
-    public static $with = ['translations'];
+    public static $with = ['translationsWithDeleted'];
 
     /**
      * Get the displayable label of the resource.

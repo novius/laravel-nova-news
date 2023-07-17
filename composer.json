@@ -24,8 +24,8 @@
         "illuminate/support": "^8.83.4|^9.3.1|^10.0",
         "laravel/nova": "^4.0",
         "novius/laravel-nova-field-preview": "^1.0.0",
-        "novius/laravel-nova-publishable": "dev-main",
-        "novius/laravel-nova-translatable": "dev-main",
+        "novius/laravel-nova-publishable": "^2.0.0",
+        "novius/laravel-nova-translatable": "^0.0.1",
         "spatie/laravel-sluggable": "^3.4",
         "waynestate/nova-ckeditor4-field": "^1.1"
     },
@@ -66,14 +66,6 @@
         {
             "type": "composer",
             "url": "https://nova.laravel.com"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:novius/laravel-nova-translatable.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:novius/laravel-translatable.git"
         }
     ],
     "config": {
