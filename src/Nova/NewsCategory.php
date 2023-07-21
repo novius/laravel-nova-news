@@ -13,7 +13,6 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
 use Novius\LaravelNovaNews\Models\NewsCategory as NewsCategoryModel;
-use Novius\LaravelNovaTranslatable\Nova\Actions\Translate;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
@@ -174,11 +173,7 @@ class NewsCategory extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [
-            Translate::make()
-                ->titleField('name')
-                ->titleLabel(trans('laravel-nova-news::crud-category.name')),
-        ];
+        return [];
     }
 
     /**
