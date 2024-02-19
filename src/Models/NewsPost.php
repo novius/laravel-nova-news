@@ -50,8 +50,8 @@ class NewsPost extends ModelWithUrl
 {
     use HasFactory;
     use HasSlug;
-    use SoftDeletes;
     use Publishable;
+    use SoftDeletes;
     use Translatable;
 
     protected $table = 'nova_news_posts';
