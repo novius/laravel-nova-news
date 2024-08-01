@@ -146,7 +146,7 @@ class NewsCategory extends Resource
     public function cards(NovaRequest $request): array
     {
         return [
-            new Locales(),
+            new Locales,
         ];
     }
 
@@ -156,7 +156,7 @@ class NewsCategory extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
-            new LocaleFilter(),
+            new LocaleFilter,
         ];
     }
 

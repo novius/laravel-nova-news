@@ -94,7 +94,7 @@ class NewsTag extends Resource
     public function cards(NovaRequest $request): array
     {
         return [
-            new Locales(),
+            new Locales,
         ];
     }
 
@@ -104,7 +104,7 @@ class NewsTag extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
-            new LocaleFilter(),
+            new LocaleFilter,
         ];
     }
 

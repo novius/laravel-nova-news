@@ -250,7 +250,7 @@ class NewsPost extends Resource
     public function cards(NovaRequest $request): array
     {
         return [
-            new Locales(),
+            new Locales,
         ];
     }
 
@@ -260,8 +260,8 @@ class NewsPost extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
-            new LocaleFilter(),
-            new PublicationStatus(),
+            new LocaleFilter,
+            new PublicationStatus,
         ];
     }
 
