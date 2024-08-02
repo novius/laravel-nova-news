@@ -2,6 +2,7 @@
 
 namespace Novius\LaravelNovaNews\Tests;
 
+use Novius\LaravelMeta\LaravelMetaServiceProvider;
 use Novius\LaravelNovaNews\LaravelNovaNewsServiceProvider;
 use Novius\LaravelPublishable\LaravelPublishableServiceProvider;
 use Novius\LaravelTranslatable\LaravelTranslatableServiceProvider;
@@ -22,6 +23,7 @@ abstract class TestCase extends Orchestra
             LaravelNovaNewsServiceProvider::class,
             LaravelTranslatableServiceProvider::class,
             LaravelPublishableServiceProvider::class,
+            LaravelMetaServiceProvider::class,
         ];
     }
 }

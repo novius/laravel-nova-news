@@ -28,10 +28,6 @@ class NewsPostFactory extends Factory
             'featured' => false,
             'intro' => $this->faker->paragraph(2),
             'content' => $this->faker->paragraph(5, true),
-            'seo_title' => $this->faker->sentence(4),
-            'seo_description' => $this->faker->paragraph(2),
-            'og_title' => $this->faker->sentence(4),
-            'og_description' => $this->faker->paragraph(2),
         ];
     }
 }
