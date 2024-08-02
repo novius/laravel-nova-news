@@ -1,0 +1,9 @@
+Route::get('news/posts', [NewsController::class, 'posts'])->name('{{frontPostsRouteName}}');
+
+Route::get('news/posts/{{{frontPostParameterName}}}', [NewsController::class, 'post'])->name('{{frontPostRouteName}}');
+
+{{withoutCategories}}Route::get('news/categories', [NewsController::class, 'categories'])->name('{{frontCategoriesRouteName}}');
+
+{{withoutCategories}}Route::get('news/categories/{{{frontCategoryParameterName}}}', [NewsController::class, 'category'])->name('{{frontCategoryRouteName}}');
+
+{{withoutTags}}Route::get('news/tags/{{{frontTagParameterName}}}', [NewsController::class, 'tag'])->name('{{frontTagRouteName}}');

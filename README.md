@@ -57,7 +57,12 @@ You can optionally publish the config file with:
 php artisan vendor:publish --provider="Novius\LaravelNovaNews\LaravelNovaNewsServiceProvider" --tag="config"
 ```
 
-This will allow you to override the resource class for example.
+This will allow you defined routes names and  
+
+This will allow you to:  
+* define the name of the routes and their parameter
+* override resource or model class
+* define locales used
 
 ```php
 // config/laravel-nova-news.php
@@ -89,6 +94,20 @@ class Post extends \Novius\LaravelNovaNews\Nova\NewsPost
     }
 }
 ```
+
+## Front Stuff
+
+If you want a pre-generated front controller and routes, you can run following command :
+
+```shell
+php artisan news-manager:publish-front {--without-categories} {--without-tags} 
+``` 
+
+This command appends routes to `routes/web.php` and creates a new `App\Http\Controllers\FrontNewsController`.
+
+You can then customize your routes and your controller.
+
+In views called by the controller use the documentation of [laravel-meta](https://github.com/novius/laravel-meta?tab=readme-ov-file#front) to implement meta tags
 
 ## Assets
 

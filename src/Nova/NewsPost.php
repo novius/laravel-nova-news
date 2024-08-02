@@ -2,8 +2,10 @@
 
 namespace Novius\LaravelNovaNews\Nova;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -14,6 +16,7 @@ use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
+use Novius\LaravelMeta\Traits\NovaResourceHasMeta;
 use Novius\LaravelNovaFieldPreview\Nova\Fields\OpenPreview;
 use Novius\LaravelNovaNews\Models\NewsPost as NewsPostModel;
 use Novius\LaravelNovaPublishable\Nova\Fields\ExpiredAt;
@@ -30,55 +33,32 @@ use Waynestate\Nova\CKEditor4Field\CKEditor;
 
 class NewsPost extends Resource
 {
+    use NovaResourceHasMeta;
+
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\Novius\LaravelNovaNews\Models\NewsPost>
+     * @var class-string<NewsPostModel>
      */
-    public static $model = NewsPostModel::class;
+    public static string $model = NewsPostModel::class;
 
-    /**
-     * The single value that should be used to represent the resource when being displayed.
-     *
-     * @var string
-     */
     public static $title = 'title';
 
-    /**
-     * The columns that should be searched.
-     *
-     * @var array
-     */
     public static $search = [
         'title',
         'slug',
     ];
 
-    /**
-     * Indicates if the resource should be displayed in the sidebar.
-     *
-     * @var bool
-     */
     public static $displayInNavigation = false;
 
     public static $with = ['translationsWithDeleted'];
 
-    /**
-     * Get the displayable label of the resource.
-     *
-     * @return string
-     */
-    public static function label()
+    public static function label(): string
     {
         return trans('laravel-nova-news::crud-post.resource_label');
     }
 
-    /**
-     * Get the displayable singular label of the resource.
-     *
-     * @return string
-     */
-    public static function singularLabel()
+    public static function singularLabel(): string
     {
         return trans('laravel-nova-news::crud-post.resource_label_singular');
     }
@@ -131,8 +111,24 @@ class NewsPost extends Resource
 
             new Panel(trans('laravel-nova-news::crud-post.panel_post_informations'), $this->mainFields()),
             new Panel(trans('laravel-nova-news::crud-post.panel_post_content'), $this->contentFields()),
-            new Panel(trans('laravel-nova-news::crud-post.panel_seo_fields'), $this->seoFields()),
-            new Panel(trans('laravel-nova-news::crud-post.panel_og_fields'), $this->ogFields()),
+            new Panel(
+                trans('laravel-nova-news::crud-post.panel_seo_fields'),
+                $this->getSEONovaFields()
+                    ->prepend(Heading::make(trans('laravel-nova-news::crud-post.seo_heading'))
+                        ->asHtml()
+                    )
+                    ->pipe(function (Collection $fields) {
+                        $position = $fields->values()->search(fn (Field $field) => Str::contains($field->attribute, 'og_'));
+                        $before = $fields->slice(0, $position);
+                        $after = $fields->slice($position);
+
+                        $before->push(Heading::make(trans('laravel-nova-news::crud-post.og_heading'))
+                            ->asHtml()
+                        );
+
+                        return $before->merge($after);
+                    })
+            ),
         ];
     }
 
@@ -205,40 +201,6 @@ class NewsPost extends Resource
 
             Image::make(trans('laravel-nova-news::crud-post.card_image'), 'card_image')
                 ->help(trans('laravel-nova-news::crud-post.card_image_help'))
-                ->nullable()
-                ->hideFromIndex(),
-        ];
-    }
-
-    protected function seoFields(): array
-    {
-        return [
-            Heading::make(trans('laravel-nova-news::crud-post.seo_heading'))
-                ->asHtml(),
-
-            Text::make(trans('laravel-nova-news::crud-post.seo_title'), 'seo_title')
-                ->nullable()
-                ->hideFromIndex(),
-
-            Textarea::make(trans('laravel-nova-news::crud-post.seo_description'), 'seo_description'),
-        ];
-    }
-
-    protected function ogFields(): array
-    {
-        return [
-            Heading::make(trans('laravel-nova-news::crud-post.og_heading'))
-                ->asHtml(),
-
-            Text::make(trans('laravel-nova-news::crud-post.og_title'), 'og_title')
-                ->nullable()
-                ->hideFromIndex(),
-
-            Textarea::make(trans('laravel-nova-news::crud-post.og_description'), 'og_description')
-                ->nullable()
-                ->hideFromIndex(),
-
-            Image::make(trans('laravel-nova-news::crud-post.og_image'), 'og_image')
                 ->nullable()
                 ->hideFromIndex(),
         ];

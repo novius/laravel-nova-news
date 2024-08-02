@@ -1,0 +1,51 @@
+<?php
+
+namespace {{ namespace }};
+
+use Novius\LaravelMeta\Facades\CurrentModel;
+use Novius\LaravelNovaNews\Models\NewsCategory;
+use Novius\LaravelNovaNews\Models\NewsPost;
+use Novius\LaravelNovaNews\Models\NewsTag;
+
+class {{ class }} extends Controller
+{
+    public function posts()
+    {
+        $posts = NewsPost::published()->get();
+
+        return view('pages.news.posts', ['posts' => $posts]);
+    }
+
+    public function post(NewsPost ${{frontPostParameterName}})
+    {
+        CurrentModel::setModel(${{frontPostParameterName}});
+
+        return view('pages.news.post', ['{{frontPostParameterName}}' => ${{frontPostParameterName}}]);
+    }
+
+    public function categories()
+    {
+        $categories = NewsCategory::all();
+
+        return view('pages.news.categories', ['categories' => $categories]);
+    }
+
+    public function category(NewsCategory ${{frontCategoryParameterName}})
+    {
+        CurrentModel::setModel(${{frontCategoryParameterName}});
+        $posts = $category->posts->filter(function (NewsPost $post) {
+            return $post->isPublished();
+        });
+
+        return view('pages.news.category', ['{{frontCategoryParameterName}}' => ${{frontCategoryParameterName}}, 'posts' => $posts]);
+    }
+
+    public function tag(NewsTag ${{frontTagParameterName}})
+    {
+        $posts = ${{frontTagParameterName}}->posts->filter(function (NewsPost $post) {
+            return $post->isPublished();
+        });
+
+        return view('pages.news.tag', ['{{frontTagParameterName}}' => ${{frontTagParameterName}}, 'posts' => $posts]);
+    }
+}

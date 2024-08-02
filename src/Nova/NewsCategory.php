@@ -2,16 +2,18 @@
 
 namespace Novius\LaravelNovaNews\Nova;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\Heading;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Resource;
+use Novius\LaravelMeta\Traits\NovaResourceHasMeta;
 use Novius\LaravelNovaNews\Models\NewsCategory as NewsCategoryModel;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
@@ -20,12 +22,14 @@ use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 
 class NewsCategory extends Resource
 {
+    use NovaResourceHasMeta;
+
     /**
      * The model the resource corresponds to.
      *
      * @var class-string<NewsCategoryModel>
      */
-    public static $model = NewsCategoryModel::class;
+    public static string $model = NewsCategoryModel::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -83,8 +87,24 @@ class NewsCategory extends Resource
             ID::make()->sortable(),
 
             new Panel(trans('laravel-nova-news::crud-category.panel_post_informations'), $this->mainFields()),
-            new Panel(trans('laravel-nova-news::crud-category.panel_seo_fields'), $this->seoFields()),
-            new Panel(trans('laravel-nova-news::crud-category.panel_og_fields'), $this->ogFields()),
+            new Panel(
+                trans('laravel-nova-news::crud-category.panel_seo_fields'),
+                $this->getSEONovaFields()
+                    ->prepend(Heading::make(trans('laravel-nova-news::crud-category.seo_heading'))
+                        ->asHtml()
+                    )
+                    ->pipe(function (Collection $fields) {
+                        $position = $fields->values()->search(fn (Field $field) => Str::contains($field->attribute, 'og_'));
+                        $before = $fields->slice(0, $position);
+                        $after = $fields->slice($position);
+
+                        $before->push(Heading::make(trans('laravel-nova-news::crud-category.og_heading'))
+                            ->asHtml()
+                        );
+
+                        return $before->merge($after);
+                    })
+            ),
         ];
     }
 
@@ -103,40 +123,6 @@ class NewsCategory extends Resource
 
             Locale::make(),
             Translations::make(),
-        ];
-    }
-
-    protected function seoFields(): array
-    {
-        return [
-            Heading::make(trans('laravel-nova-news::crud-category.seo_heading'))
-                ->asHtml(),
-
-            Text::make(trans('laravel-nova-news::crud-category.seo_title'), 'seo_title')
-                ->nullable()
-                ->hideFromIndex(),
-
-            Textarea::make(trans('laravel-nova-news::crud-category.seo_description'), 'seo_description'),
-        ];
-    }
-
-    protected function ogFields(): array
-    {
-        return [
-            Heading::make(trans('laravel-nova-news::crud-category.og_heading'))
-                ->asHtml(),
-
-            Text::make(trans('laravel-nova-news::crud-category.og_title'), 'og_title')
-                ->nullable()
-                ->hideFromIndex(),
-
-            Textarea::make(trans('laravel-nova-news::crud-category.og_description'), 'og_description')
-                ->nullable()
-                ->hideFromIndex(),
-
-            Image::make(trans('laravel-nova-news::crud-category.og_image'), 'og_image')
-                ->nullable()
-                ->hideFromIndex(),
         ];
     }
 
@@ -179,11 +165,10 @@ class NewsCategory extends Resource
     /**
      * Return a replicated resource.
      *
-     * @return static
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function replicate()
+    public function replicate(): static
     {
         return tap(parent::replicate(), function ($resource) {
             $model = $resource->model();

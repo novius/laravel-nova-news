@@ -31,7 +31,9 @@ return [
      * The route name used to display news posts and categories.
      */
     'front_routes_name' => [
+        'posts' => null,
         'post' => null,
+        'categories' => null,
         'category' => null,
         'tag' => null,
     ],

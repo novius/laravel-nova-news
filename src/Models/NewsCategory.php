@@ -2,10 +2,15 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Novius\LaravelMeta\Enums\IndexFollow;
+use Novius\LaravelMeta\MetaModelConfig;
+use Novius\LaravelMeta\Traits\HasMeta;
 use Novius\LaravelNovaNews\Database\Factories\NewsCategoryFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelTranslatable\Traits\Translatable;
@@ -20,19 +25,32 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $slug
  * @property string $locale
  * @property int locale_parent_id
- * @property string $seo_title
- * @property string $seo_description
- * @property string $og_title
- * @property string $og_description
- * @property string $og_image
  * @property array $extras
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
+ * @property-read string|null $seo_robots
+ * @property-read string|null $seo_title
+ * @property-read string|null $seo_description
+ * @property-read string|null $seo_keywords
+ * @property-read string|null $og_type
+ * @property-read string|null $og_title
+ * @property-read string|null $og_description
+ * @property-read string|null $og_image
+ * @property-read string|null $og_image_url
+ *
+ * @method static Builder|NewsCategory indexableByRobots()
+ * @method static Builder|NewsCategory newModelQuery()
+ * @method static Builder|NewsCategory newQuery()
+ * @method static Builder|NewsCategory notIndexableByRobots()
+ * @method static Builder|NewsCategory query()
+ *
+ * @mixin Eloquent
  */
 class NewsCategory extends ModelWithUrl
 {
     use HasFactory;
+    use HasMeta;
     use HasSlug;
     use SoftDeletes;
     use Translatable;
@@ -48,7 +66,7 @@ class NewsCategory extends ModelWithUrl
         'extras' => 'json',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::saving(function ($category) {
             $locales = config('laravel-nova-news.locales', []);
@@ -65,6 +83,17 @@ class NewsCategory extends ModelWithUrl
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug')
             ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function getMetaConfig(): MetaModelConfig
+    {
+        if (! isset($this->metaConfig)) {
+            $this->metaConfig = MetaModelConfig::make()
+                ->setDefaultSeoRobots(IndexFollow::index_follow)
+                ->setFallbackTitle('name');
+        }
+
+        return $this->metaConfig;
     }
 
     public function getFrontRouteName(): ?string

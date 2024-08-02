@@ -96,8 +96,10 @@ abstract class ModelWithUrl extends Model
 
                 return $this->resolveRouteBindingQuery($query, $value, $field)->first();
             }
+
+            return $this->resolveRouteBindingQuery($query->published(), $value, $field)->first();
         }
 
-        return $this->resolveRouteBindingQuery($query->published(), $value, $field)->first();
+        return $this->resolveRouteBindingQuery($query, $value, $field)->first();
     }
 }

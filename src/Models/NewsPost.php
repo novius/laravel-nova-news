@@ -2,11 +2,18 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Novius\LaravelMeta\Enums\IndexFollow;
+use Novius\LaravelMeta\MetaModelConfig;
+use Novius\LaravelMeta\Traits\HasMeta;
 use Novius\LaravelNovaNews\Database\Factories\NewsPostFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelPublishable\Enums\PublicationStatus;
@@ -32,11 +39,6 @@ use Spatie\Sluggable\SlugOptions;
  * @property NewsCategory $categories
  * @property NewsTag $tags
  * @property string $preview_token
- * @property string $seo_title
- * @property string $seo_description
- * @property string $og_title
- * @property string $og_description
- * @property string $og_image
  * @property array $extras
  * @property PublicationStatus $publication_status
  * @property Carbon|null $published_first_at
@@ -45,10 +47,34 @@ use Spatie\Sluggable\SlugOptions;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
+ * @property-read string|null $seo_robots
+ * @property-read string|null $seo_title
+ * @property-read string|null $seo_description
+ * @property-read string|null $seo_keywords
+ * @property-read string|null $og_type
+ * @property-read string|null $og_title
+ * @property-read string|null $og_description
+ * @property-read string|null $og_image
+ * @property-read string|null $og_image_url
+ *
+ * @method static Builder|NewsPost indexableByRobots()
+ * @method static Builder|NewsPost newModelQuery()
+ * @method static Builder|NewsPost newQuery()
+ * @method static Builder|NewsPost notIndexableByRobots()
+ * @method static Builder|NewsPost notPublished()
+ * @method static Builder|NewsPost onlyDrafted()
+ * @method static Builder|NewsPost onlyExpired()
+ * @method static Builder|NewsPost onlyWillBePublished()
+ * @method static Builder|NewsPost published()
+ * @method static Builder|NewsPost query()
+ * @method static Builder|NewsPost withLocale(?string $locale)
+ *
+ * @mixin Eloquent
  */
 class NewsPost extends ModelWithUrl
 {
     use HasFactory;
+    use HasMeta;
     use HasSlug;
     use Publishable;
     use SoftDeletes;
@@ -62,9 +88,9 @@ class NewsPost extends ModelWithUrl
         'extras' => 'json',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::saving(function ($post) {
+        static::saving(static function ($post) {
             if (empty($post->preview_token)) {
                 $post->preview_token = Str::random();
             }
@@ -100,17 +126,30 @@ class NewsPost extends ModelWithUrl
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function localParent()
+    public function getMetaConfig(): MetaModelConfig
+    {
+        if (! isset($this->metaConfig)) {
+            $this->metaConfig = MetaModelConfig::make()
+                ->setDefaultSeoRobots(IndexFollow::index_follow)
+                ->setFallbackTitle('title')
+                ->setFallbackDescription('intro')
+                ->setFallbackImage('featured_image');
+        }
+
+        return $this->metaConfig;
+    }
+
+    public function localParent(): HasOne
     {
         return $this->hasOne(static::class, 'id', 'locale_parent_id');
     }
 
-    public function categories()
+    public function categories(): BelongsToMany
     {
         return $this->belongsToMany(NovaNews::getCategoryModel(), 'nova_news_post_category', 'news_post_id', 'news_category_id');
     }
 
-    public function tags()
+    public function tags(): BelongsToMany
     {
         return $this->belongsToMany(NovaNews::getTagModel(), 'nova_news_post_tag', 'news_post_id', 'news_tag_id');
     }

@@ -5,6 +5,7 @@ namespace Novius\LaravelNovaNews;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Nova;
+use Novius\LaravelNovaNews\Console\FrontControllerCommand;
 use Novius\LaravelNovaNews\Models\NewsCategory;
 use Novius\LaravelNovaNews\Models\NewsPost;
 
@@ -78,5 +79,11 @@ class LaravelNovaNewsServiceProvider extends ServiceProvider
 
             return empty($query->first());
         });
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                FrontControllerCommand::class,
+            ]);
+        }
     }
 }
