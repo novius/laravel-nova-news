@@ -2,10 +2,14 @@
 
 namespace Novius\LaravelNovaNews\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Novius\LaravelLinkable\Configs\LinkableConfig;
+use Novius\LaravelLinkable\Traits\Linkable;
 use Novius\LaravelNovaNews\Database\Factories\NewsTagFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelTranslatable\Traits\Translatable;
@@ -24,10 +28,11 @@ use Spatie\Sluggable\SlugOptions;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class NewsTag extends ModelWithUrl
+class NewsTag extends Model
 {
     use HasFactory;
     use HasSlug;
+    use Linkable;
     use SoftDeletes;
     use Translatable;
 
@@ -53,14 +58,34 @@ class NewsTag extends ModelWithUrl
         });
     }
 
-    public function getFrontRouteName(): ?string
+    public function getRouteKeyName(): string
     {
-        return config('laravel-nova-news.front_routes_name.tag');
+        return 'slug';
     }
 
-    public function getFrontRouteParameter(): ?string
+    protected ?LinkableConfig $_linkableConfig;
+
+    public function linkableConfig(): ?LinkableConfig
     {
-        return config('laravel-nova-news.front_routes_parameters.tag');
+        $route = config('laravel-nova-news.front_routes_name.tag');
+        $routeParameterName = config('laravel-nova-news.front_routes_parameters.tag');
+        if (empty($routeParameterName) && empty($route)) {
+            return null;
+        }
+
+        if (! isset($this->_linkableConfig)) {
+            $this->_linkableConfig = new LinkableConfig(
+                routeName: $route,
+                routeParameterName: $routeParameterName,
+                optionLabel: 'name',
+                optionGroup: trans('laravel-nova-news::crud-tag.resource_label'),
+                resolveQuery: function (Builder|NewsCategory $query) {
+                    $query->where('locale', app()->currentLocale());
+                },
+            );
+        }
+
+        return $this->_linkableConfig;
     }
 
     public function getSlugOptions(): SlugOptions

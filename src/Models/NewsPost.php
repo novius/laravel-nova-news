@@ -6,11 +6,14 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Novius\LaravelLinkable\Configs\LinkableConfig;
+use Novius\LaravelLinkable\Traits\Linkable;
 use Novius\LaravelMeta\Enums\IndexFollow;
 use Novius\LaravelMeta\MetaModelConfig;
 use Novius\LaravelMeta\Traits\HasMeta;
@@ -71,11 +74,12 @@ use Spatie\Sluggable\SlugOptions;
  *
  * @mixin Eloquent
  */
-class NewsPost extends ModelWithUrl
+class NewsPost extends Model
 {
     use HasFactory;
     use HasMeta;
     use HasSlug;
+    use Linkable;
     use Publishable;
     use SoftDeletes;
     use Translatable;
@@ -103,19 +107,14 @@ class NewsPost extends ModelWithUrl
         });
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function isFeatured(): bool
     {
         return $this->featured;
-    }
-
-    public function getFrontRouteName(): ?string
-    {
-        return config('laravel-nova-news.front_routes_name.post');
-    }
-
-    public function getFrontRouteParameter(): ?string
-    {
-        return config('laravel-nova-news.front_routes_parameters.post');
     }
 
     public function getSlugOptions(): SlugOptions
@@ -137,6 +136,35 @@ class NewsPost extends ModelWithUrl
         }
 
         return $this->metaConfig;
+    }
+
+    protected ?LinkableConfig $_linkableConfig;
+
+    public function linkableConfig(): ?LinkableConfig
+    {
+        $route = config('laravel-nova-news.front_routes_name.post');
+        $routeParameterName = config('laravel-nova-news.front_routes_parameters.post');
+        if (empty($routeParameterName) && empty($route)) {
+            return null;
+        }
+
+        if (! isset($this->_linkableConfig)) {
+            $this->_linkableConfig = new LinkableConfig(
+                routeName: $route,
+                routeParameterName: $routeParameterName,
+                optionLabel: 'title',
+                optionGroup: trans('laravel-nova-news::crud-post.resource_label'),
+                resolveQuery: function (Builder|NewsPost $query) {
+                    $query->where('locale', app()->currentLocale());
+                },
+                resolveNotPreviewQuery: function (Builder|NewsPost $query) {
+                    $query->published();
+                },
+                previewTokenField: 'preview_token'
+            );
+        }
+
+        return $this->_linkableConfig;
     }
 
     public function localParent(): HasOne

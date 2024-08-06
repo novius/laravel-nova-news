@@ -6,8 +6,11 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Novius\LaravelLinkable\Configs\LinkableConfig;
+use Novius\LaravelLinkable\Traits\Linkable;
 use Novius\LaravelMeta\Enums\IndexFollow;
 use Novius\LaravelMeta\MetaModelConfig;
 use Novius\LaravelMeta\Traits\HasMeta;
@@ -47,11 +50,12 @@ use Spatie\Sluggable\SlugOptions;
  *
  * @mixin Eloquent
  */
-class NewsCategory extends ModelWithUrl
+class NewsCategory extends Model
 {
     use HasFactory;
     use HasMeta;
     use HasSlug;
+    use Linkable;
     use SoftDeletes;
     use Translatable;
 
@@ -77,6 +81,11 @@ class NewsCategory extends ModelWithUrl
         });
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -96,14 +105,29 @@ class NewsCategory extends ModelWithUrl
         return $this->metaConfig;
     }
 
-    public function getFrontRouteName(): ?string
-    {
-        return config('laravel-nova-news.front_routes_name.category');
-    }
+    protected ?LinkableConfig $_linkableConfig;
 
-    public function getFrontRouteParameter(): ?string
+    public function linkableConfig(): ?LinkableConfig
     {
-        return config('laravel-nova-news.front_routes_parameters.category');
+        $route = config('laravel-nova-news.front_routes_name.post');
+        $routeParameterName = config('laravel-nova-news.front_routes_parameters.post');
+        if (empty($routeParameterName) && empty($route)) {
+            return null;
+        }
+
+        if (! isset($this->_linkableConfig)) {
+            $this->_linkableConfig = new LinkableConfig(
+                routeName: $route,
+                routeParameterName: $routeParameterName,
+                optionLabel: 'name',
+                optionGroup: trans('laravel-nova-news::crud-category.resource_label'),
+                resolveQuery: function (Builder|NewsCategory $query) {
+                    $query->where('locale', app()->currentLocale());
+                },
+            );
+        }
+
+        return $this->_linkableConfig;
     }
 
     public function localParent()
