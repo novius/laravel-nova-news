@@ -1,10 +1,10 @@
 
-Route::get('news/posts', [\App\Http\Controllers\NewsController::class, 'posts'])->name('{{frontPostsRouteName}}');
+Route::get('news/posts', [\App\Http\Controllers\FrontNewsController::class, 'posts'])->name('{{frontPostsRouteName}}');
 
-Route::get('news/posts/{{{frontPostParameterName}}}', [\App\Http\Controllers\NewsController::class, 'post'])->name('{{frontPostRouteName}}');
+Route::get('news/posts/{{{frontPostParameterName}}}', [\App\Http\Controllers\FrontNewsController::class, 'post'])->name('{{frontPostRouteName}}');
 
-{{withoutCategories}}Route::get('news/categories', [\App\Http\Controllers\NewsController::class, 'categories'])->name('{{frontCategoriesRouteName}}');
+{{withoutCategories}}Route::get('news/categories', [\App\Http\Controllers\FrontNewsController::class, 'categories'])->name('{{frontCategoriesRouteName}}');
 
-{{withoutCategories}}Route::get('news/categories/{{{frontCategoryParameterName}}}', [\App\Http\Controllers\NewsController::class, 'category'])->name('{{frontCategoryRouteName}}');
+{{withoutCategories}}Route::get('news/categories/{{{frontCategoryParameterName}}}', [\App\Http\Controllers\FrontNewsController::class, 'category'])->name('{{frontCategoryRouteName}}');
 
-{{withoutTags}}Route::get('news/tags/{{{frontTagParameterName}}}', [\App\Http\Controllers\NewsController::class, 'tag'])->name('{{frontTagRouteName}}');
+{{withoutTags}}Route::get('news/tags/{{{frontTagParameterName}}}', [\App\Http\Controllers\FrontNewsController::class, 'tag'])->name('{{frontTagRouteName}}');
