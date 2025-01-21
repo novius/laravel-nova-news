@@ -50,6 +50,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
+ * @property array<array-key, mixed>|null $meta
  * @property-read string|null $seo_robots
  * @property-read string|null $seo_title
  * @property-read string|null $seo_description

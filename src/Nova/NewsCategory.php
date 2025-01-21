@@ -173,8 +173,8 @@ class NewsCategory extends Resource
         return tap(parent::replicate(), function ($resource) {
             $model = $resource->model();
 
-            $model->title = $model->title.' (copy)';
-            $model->slug = Str::slug($model->title);
+            $model->name .= ' (copy)';
+            $model->slug = Str::slug($model->name);
         });
     }
 }
