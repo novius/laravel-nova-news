@@ -125,11 +125,11 @@ jobs:
           path: vendor
           key: composer-${{ hashFiles('composer.lock') }}
 
-      - name: Add Nova key
-        run: composer config http-basic.nova.laravel.com $LARAVEL_NOVA_USERNAME $LARAVEL_NOVA_LICENSE_KEY
+      - name: Login to Laravel Nova
+        run: composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_LICENSE_KEY}
         env:
-          LARAVEL_NOVA_USERNAME: ${{ secrets.LARAVEL_NOVA_USERNAME }}
-          LARAVEL_NOVA_LICENSE_KEY: ${{ secrets.LARAVEL_NOVA_LICENSE_KEY }}
+          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+          NOVA_LICENSE_KEY: ${{ secrets.NOVA_LICENSE_KEY }}
 
       - name: Install Dependencies
         run: |
