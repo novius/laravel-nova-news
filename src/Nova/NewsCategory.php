@@ -20,6 +20,9 @@ use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
 use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 
+/**
+ * @extends Resource<NewsCategoryModel>
+ */
 class NewsCategory extends Resource
 {
     use NovaResourceHasMeta;

@@ -22,6 +22,7 @@ class FrontControllerCommand extends GeneratorCommand
      */
     protected $type = 'Controller';
 
+    /** @phpstan-ignore method.childReturnType */
     public function handle(): void
     {
         if (parent::handle() !== false) {

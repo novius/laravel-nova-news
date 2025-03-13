@@ -7,19 +7,23 @@ use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Novius\LaravelNovaNews\Models\NewsTag as NewsTagModel;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
 use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 
+/**
+ * @extends Resource<NewsTagModel>
+ */
 class NewsTag extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\Novius\LaravelNovaNews\Models\NewsTag>
+     * @var class-string<NewsTagModel>
      */
-    public static $model = \Novius\LaravelNovaNews\Models\NewsTag::class;
+    public static $model = NewsTagModel::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.

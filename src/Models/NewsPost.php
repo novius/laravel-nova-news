@@ -32,7 +32,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string $title
  * @property string $slug
  * @property string $locale
- * @property int locale_parent_id
+ * @property int $locale_parent_id
  * @property bool $featured
  * @property string $intro
  * @property string $content

@@ -31,6 +31,9 @@ use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
 use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 use Waynestate\Nova\CKEditor4Field\CKEditor;
 
+/**
+ * @extends Resource<NewsPostModel>
+ */
 class NewsPost extends Resource
 {
     use NovaResourceHasMeta;

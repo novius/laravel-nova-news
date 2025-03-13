@@ -21,20 +21,21 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^10.0|^11.0",
-        "laravel/nova": "^4.0|^5.0",
+        "laravel/framework": "^10.0 | ^11.0 | ^12.0",
+        "laravel/nova": "^4.0 | ^5.0",
         "novius/laravel-linkable": "^1.0",
         "novius/laravel-meta": "^1.0",
         "novius/laravel-nova-field-preview": "^2.0",
         "novius/laravel-nova-publishable": "^3.0",
         "novius/laravel-nova-translatable": "^1.0",
         "spatie/laravel-sluggable": "^3.4",
-        "waynestate/nova-ckeditor4-field": "^1.1|^2.0"
+        "waynestate/nova-ckeditor4-field": "^1.1 | ^2.0"
     },
     "require-dev": {
+        "larastan/larastan": "^2.0 | ^3.0",
         "laravel/pint": "^1.13",
-        "orchestra/testbench": "^v9.2.0",
-        "pestphp/pest": "^2.34"
+        "orchestra/testbench": "^v9.2.0 | ^v10.1.0",
+        "pestphp/pest": "^2.34 | ^v3.7.4"
     },
     "autoload": {
         "psr-4": {
@@ -62,7 +63,12 @@
         "lint": [
             "@composer cs-fix -- --test"
         ],
-        "test": "vendor/bin/pest"
+        "test": [
+            "vendor/bin/pest"
+        ],
+        "phpstan": [
+            "./vendor/bin/phpstan analyse --memory-limit=1G"
+        ]
     },
     "repositories": [
         {
