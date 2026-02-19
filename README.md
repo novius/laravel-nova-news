@@ -16,7 +16,7 @@ You can attach multiple categories and tags to a post. Categories can be viewed 
 
 * PHP >= 8.2
 * Laravel Nova >= 4.0
-* Laravel >= 10.0
+* Laravel >= 11.0
 
 > **NOTE**: These instructions are for Laravel >= 10.0 and PHP >= 8.2 If you are using prior version, please
 > see the [previous version's docs](https://github.com/novius/laravel-nova-news/tree/0.1.x).

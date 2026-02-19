@@ -12,30 +12,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
 
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Login to Laravel Nova
-      run: composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_LICENSE_KEY}
-      env:
-        NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
-        NOVA_LICENSE_KEY: ${{ secrets.NOVA_LICENSE_KEY }}
+      - name: Login to Laravel Nova
+        run: composer config http-basic.nova.laravel.com ${NOVA_USERNAME} ${NOVA_LICENSE_KEY}
+        env:
+          NOVA_USERNAME: ${{ secrets.NOVA_USERNAME }}
+          NOVA_LICENSE_KEY: ${{ secrets.NOVA_LICENSE_KEY }}
 
-    - name: Cache composer dependencies
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: composer-${{ hashFiles('composer.lock') }}
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
 
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-    - name: Lint PHP code via Laravel Pint
-      run: composer run-script lint
+      - name: Lint PHP code via Laravel Pint
+        run: composer run-script lint
 
   test-app:
     runs-on: ubuntu-latest
@@ -43,8 +43,8 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: ['ubuntu-latest']
-        php-versions: ['8.2', '8.3', '8.4']
-        laravel: [ 10.*, 11.*, 12.* ]
+        php-versions: ['8.2', '8.3', '8.4', '8.5']
+        laravel: [ 11.*, 12.* ]
         dependency-version: [ prefer-stable ]
         include:
           - laravel: 12.*
@@ -52,9 +52,6 @@ jobs:
             carbon: 3.*
           - laravel: 11.*
             testbench: 9.*
-            carbon: 2.*
-          - laravel: 10.*
-            testbench: 8.*
             carbon: 2.*
 
     name: test - P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
@@ -94,7 +91,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: ['ubuntu-latest']
-        php-versions: ['8.2', '8.3', '8.4']
+        php-versions: ['8.2', '8.3', '8.4', '8.5']
         laravel: [ 11.*, 12.* ]
         nova: [ 4.*, 5.* ]
         dependency-version: [ prefer-stable ]
