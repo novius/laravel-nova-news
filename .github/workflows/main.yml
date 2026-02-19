@@ -53,6 +53,9 @@ jobs:
           - laravel: 11.*
             testbench: 9.*
             carbon: 2.*
+        exclude:
+          - php-versions: '8.5'
+            nova: 4.*
 
     name: test - P${{ matrix.php-versions }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
@@ -103,6 +106,8 @@ jobs:
             testbench: 9.*
             carbon: 2.*
         exclude:
+          - php-versions: '8.5'
+            nova: 4.*
           - laravel: 12.*
             nova: 4.*
 
