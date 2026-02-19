@@ -16,6 +16,8 @@ abstract class TestCase extends Orchestra
         parent::setup();
 
         $this->loadLaravelMigrations();
+
+        config(['laravel-nova-news.locales' => ['en', 'fr']]);
     }
 
     protected function getPackageProviders($app): array

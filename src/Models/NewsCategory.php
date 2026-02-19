@@ -16,7 +16,8 @@ use Novius\LaravelMeta\MetaModelConfig;
 use Novius\LaravelMeta\Traits\HasMeta;
 use Novius\LaravelNovaNews\Database\Factories\NewsCategoryFactory;
 use Novius\LaravelNovaNews\NovaNews;
-use Novius\LaravelTranslatable\Support\TranslatableModelConfig;use Novius\LaravelTranslatable\Traits\Translatable;
+use Novius\LaravelTranslatable\Support\TranslatableModelConfig;
+use Novius\LaravelTranslatable\Traits\Translatable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
