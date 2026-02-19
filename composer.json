@@ -27,14 +27,14 @@
         "novius/laravel-meta": "^1.0",
         "novius/laravel-nova-field-preview": "^2.0",
         "novius/laravel-nova-publishable": "^3.0",
-        "novius/laravel-nova-translatable": "^1.0",
+        "novius/laravel-nova-translatable": "^2.0",
         "spatie/laravel-sluggable": "^3.4",
         "waynestate/nova-ckeditor4-field": "^1.1 | ^2.0"
     },
     "require-dev": {
         "larastan/larastan": "^2.0 | ^3.0",
         "laravel/pint": "^1.13",
-        "orchestra/testbench": "^v9.2.0 | ^v10.1.0",
+        "orchestra/testbench": "^10.9",
         "pestphp/pest": "^2.34 | ^v3.7.4"
     },
     "autoload": {
@@ -46,7 +46,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Novius\\LaravelNovaNews\\Tests\\": "tests/"
+            "Novius\\LaravelNovaNews\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "extra": {
@@ -68,6 +71,18 @@
         ],
         "phpstan": [
             "./vendor/bin/phpstan analyse --memory-limit=1G"
+        ],
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
         ]
     },
     "repositories": [

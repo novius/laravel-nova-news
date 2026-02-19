@@ -6,7 +6,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Resource;
+use Laravel\Nova\Resource as NovaResource;
 use Novius\LaravelNovaNews\Models\NewsTag as NewsTagModel;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
 use Novius\LaravelNovaTranslatable\Nova\Fields\Locale;
@@ -14,9 +14,9 @@ use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
 use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 
 /**
- * @extends Resource<NewsTagModel>
+ * @extends NovaResource<NewsTagModel>
  */
-class NewsTag extends Resource
+class NewsTag extends NovaResource
 {
     /**
      * The model the resource corresponds to.
@@ -65,11 +65,6 @@ class NewsTag extends Resource
     public static function singularLabel(): string
     {
         return trans('laravel-nova-news::crud-tag.resource_label_singular');
-    }
-
-    public function availableLocales(): array
-    {
-        return config('laravel-nova-news.locales', []);
     }
 
     /**

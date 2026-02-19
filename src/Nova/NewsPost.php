@@ -15,7 +15,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
-use Laravel\Nova\Resource;
+use Laravel\Nova\Resource as NovaResource;
 use Novius\LaravelMeta\Traits\NovaResourceHasMeta;
 use Novius\LaravelNovaFieldPreview\Nova\Fields\OpenPreview;
 use Novius\LaravelNovaNews\Models\NewsPost as NewsPostModel;
@@ -32,9 +32,9 @@ use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 use Waynestate\Nova\CKEditor4Field\CKEditor;
 
 /**
- * @extends Resource<NewsPostModel>
+ * @extends NovaResource<NewsPostModel>
  */
-class NewsPost extends Resource
+class NewsPost extends NovaResource
 {
     use NovaResourceHasMeta;
 
@@ -64,11 +64,6 @@ class NewsPost extends Resource
     public static function singularLabel(): string
     {
         return trans('laravel-nova-news::crud-post.resource_label_singular');
-    }
-
-    public function availableLocales(): array
-    {
-        return config('laravel-nova-news.locales', []);
     }
 
     protected function publicationFields(): array

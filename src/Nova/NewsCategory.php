@@ -12,7 +12,7 @@ use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
-use Laravel\Nova\Resource;
+use Laravel\Nova\Resource as NovaResource;
 use Novius\LaravelMeta\Traits\NovaResourceHasMeta;
 use Novius\LaravelNovaNews\Models\NewsCategory as NewsCategoryModel;
 use Novius\LaravelNovaTranslatable\Nova\Cards\Locales;
@@ -21,9 +21,9 @@ use Novius\LaravelNovaTranslatable\Nova\Fields\Translations;
 use Novius\LaravelNovaTranslatable\Nova\Filters\LocaleFilter;
 
 /**
- * @extends Resource<NewsCategoryModel>
+ * @extends NovaResource<NewsCategoryModel>
  */
-class NewsCategory extends Resource
+class NewsCategory extends NovaResource
 {
     use NovaResourceHasMeta;
 
@@ -74,11 +74,6 @@ class NewsCategory extends Resource
     public static function singularLabel(): string
     {
         return trans('laravel-nova-news::crud-category.resource_label_singular');
-    }
-
-    public function availableLocales(): array
-    {
-        return config('laravel-nova-news.locales', []);
     }
 
     /**

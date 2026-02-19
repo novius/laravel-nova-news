@@ -20,12 +20,12 @@ return [
     ],
 
     /*
-     * The locales available for your posts.
+     * The locales available for your posts. By default, it's the locales defined in your app.'
      */
-    'locales' => [
-        'en' => 'English',
-        'fr' => 'Français',
-    ],
+    /*    'locales' => [
+            'en' => 'English',
+            'fr' => 'Français',
+    ],*/
 
     /*
      * The route name used to display news posts and categories.

@@ -21,6 +21,7 @@ use Novius\LaravelNovaNews\Database\Factories\NewsPostFactory;
 use Novius\LaravelNovaNews\NovaNews;
 use Novius\LaravelPublishable\Enums\PublicationStatus;
 use Novius\LaravelPublishable\Traits\Publishable;
+use Novius\LaravelTranslatable\Support\TranslatableModelConfig;
 use Novius\LaravelTranslatable\Traits\Translatable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -166,6 +167,11 @@ class NewsPost extends Model
         }
 
         return $this->_linkableConfig;
+    }
+
+    public function translatableConfig(): TranslatableModelConfig
+    {
+        return new TranslatableModelConfig(config('laravel-nova-news.locales'));
     }
 
     public function localParent(): HasOne
