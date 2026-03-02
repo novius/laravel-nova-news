@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Novius\LaravelLinkable\Configs\LinkableConfig;
 use Novius\LaravelLinkable\Traits\Linkable;
@@ -74,11 +75,10 @@ class NewsCategory extends Model
 
     protected static function booted(): void
     {
-        static::saving(function ($category) {
-            $locales = config('laravel-nova-news.locales', []);
-
+        static::saving(function (NewsCategory $category) {
+            $locales = $category->translatableConfig()->available_locales;
             if (empty($category->locale) && count($locales) === 1) {
-                $category->locale = array_key_first($locales);
+                $category->locale = Arr::first($locales);
             }
         });
     }

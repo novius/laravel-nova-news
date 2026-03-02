@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Novius\LaravelLinkable\Configs\LinkableConfig;
 use Novius\LaravelLinkable\Traits\Linkable;
@@ -50,11 +51,10 @@ class NewsTag extends Model
 
     protected static function booted()
     {
-        static::saving(function ($tag) {
-            $locales = config('laravel-nova-news.locales', []);
-
+        static::saving(function (NewsTag $tag) {
+            $locales = $tag->translatableConfig()->available_locales;
             if (empty($tag->locale) && count($locales) === 1) {
-                $tag->locale = array_key_first($locales);
+                $tag->locale = Arr::first($locales);
             }
         });
     }

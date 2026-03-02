@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Novius\LaravelLinkable\Configs\LinkableConfig;
@@ -96,15 +97,14 @@ class NewsPost extends Model
 
     protected static function booted(): void
     {
-        static::saving(static function ($post) {
+        static::saving(static function (NewsPost $post) {
             if (empty($post->preview_token)) {
                 $post->preview_token = Str::random();
             }
 
-            $locales = config('laravel-nova-news.locales', []);
-
+            $locales = $post->translatableConfig()->available_locales;
             if (empty($post->locale) && count($locales) === 1) {
-                $post->locale = array_key_first($locales);
+                $post->locale = Arr::first($locales);
             }
         });
     }
