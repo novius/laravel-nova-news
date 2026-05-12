@@ -67,6 +67,8 @@ jobs:
             nova: 4.*
           - laravel: 13.*
             php-versions: '8.2'
+          - laravel: 13.*
+            nova: 4.*
 
     name: phpstan - P${{ matrix.php-versions }} - L${{ matrix.laravel }} - N${{ matrix.nova }}
 
@@ -136,6 +138,8 @@ jobs:
             nova: 4.*
           - laravel: 13.*
             php-versions: '8.2'
+          - laravel: 13.*
+            nova: 4.*
 
     name: test - P${{ matrix.php-versions }} - L${{ matrix.laravel }} - N${{ matrix.nova }}
 
