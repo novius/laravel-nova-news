@@ -63,11 +63,13 @@ jobs:
             testbench: 8.*
             larastan: 2.*
         exclude:
-          - php-versions: '8.5'
-            nova: 4.*
           - laravel: 13.*
             php-versions: '8.2'
+          - laravel: 12.*
+            nova: 4.*
           - laravel: 13.*
+            nova: 4.*
+          - php-versions: '8.5'
             nova: 4.*
 
     name: phpstan - P${{ matrix.php-versions }} - L${{ matrix.laravel }} - N${{ matrix.nova }}
@@ -134,11 +136,13 @@ jobs:
             testbench: 8.*
             larastan: 2.*
         exclude:
-          - php-versions: '8.5'
-            nova: 4.*
           - laravel: 13.*
             php-versions: '8.2'
+          - laravel: 12.*
+            nova: 4.*
           - laravel: 13.*
+            nova: 4.*
+          - php-versions: '8.5'
             nova: 4.*
 
     name: test - P${{ matrix.php-versions }} - L${{ matrix.laravel }} - N${{ matrix.nova }}
