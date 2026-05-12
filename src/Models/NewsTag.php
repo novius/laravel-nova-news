@@ -34,7 +34,9 @@ class NewsTag extends Model
 {
     use HasFactory;
     use HasSlug;
-    use Linkable;
+    use Linkable {
+        Linkable::resolveRouteBinding insteadof HasSlug;
+    }
     use SoftDeletes;
     use Translatable;
 

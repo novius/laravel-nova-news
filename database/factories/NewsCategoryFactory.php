@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Novius\LaravelNovaNews\Models\NewsCategory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<NewsCategory>
+ * @extends Factory<NewsCategory>
  */
 class NewsCategoryFactory extends Factory
 {

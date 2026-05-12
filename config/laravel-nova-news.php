@@ -1,22 +1,26 @@
 <?php
 
+use Novius\LaravelNovaNews\Nova\NewsCategory;
+use Novius\LaravelNovaNews\Nova\NewsPost;
+use Novius\LaravelNovaNews\Nova\NewsTag;
+
 return [
     /*
      * Resources used to manage your posts.
      */
     'resources' => [
-        'post' => \Novius\LaravelNovaNews\Nova\NewsPost::class,
-        'category' => \Novius\LaravelNovaNews\Nova\NewsCategory::class,
-        'tag' => \Novius\LaravelNovaNews\Nova\NewsTag::class,
+        'post' => NewsPost::class,
+        'category' => NewsCategory::class,
+        'tag' => NewsTag::class,
     ],
 
     /*
      * Models used to manage your posts.
      */
     'models' => [
-        'post' => \Novius\LaravelNovaNews\Models\NewsPost::class,
-        'category' => \Novius\LaravelNovaNews\Models\NewsCategory::class,
-        'tag' => \Novius\LaravelNovaNews\Models\NewsTag::class,
+        'post' => Novius\LaravelNovaNews\Models\NewsPost::class,
+        'category' => Novius\LaravelNovaNews\Models\NewsCategory::class,
+        'tag' => Novius\LaravelNovaNews\Models\NewsTag::class,
     ],
 
     /*

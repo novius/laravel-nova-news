@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Novius\LaravelNovaNews\Models\NewsTag;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<NewsTag>
+ * @extends Factory<NewsTag>
  */
 class NewsTagFactory extends Factory
 {
