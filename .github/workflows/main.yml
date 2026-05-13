@@ -108,6 +108,10 @@ jobs:
           - laravel: 13.*
             php-versions: '8.2'
           - laravel: 12.*
+            php-versions: '8.2'
+          - laravel: 11.*
+            php-versions: '8.2'
+          - laravel: 12.*
             nova: 4.*
           - laravel: 13.*
             nova: 4.*
